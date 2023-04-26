@@ -1,13 +1,14 @@
 ﻿using AppKit;
 
+
 namespace CorsovaiBD
 {
-	static class MainClass
+
+    static class MainClass
 	{
 		static void Main (string [] args)
 		{
-			NSApplication.Init ();
-			NSApplication.Main (args);
+			NSApplication.Init ();			NSApplication.Main (args);
 		}
 	}
 }

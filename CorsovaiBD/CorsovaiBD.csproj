@@ -2,6 +2,11 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\NUnit.3.13.3\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.3\build\NUnit.props')" />
   <PropertyGroup>
+
+     <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0-macos</TargetFramework>
+    <LangVersion>9.0</LangVersion> <!-- изменить на 8.0 или более новую -->
+
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3DF0FCBC-CB1C-4A5C-969E-1A9FD4128B5E}</ProjectGuid>
@@ -129,6 +134,8 @@
     <Compile Include="Controllers\InitBd.designer.cs">
       <DependentUpon>InitBd.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\MyTableDataSource.cs" />
+    <Compile Include="Models\ComboBoxDataSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

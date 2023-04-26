@@ -1,16 +1,25 @@
-﻿using System;
-using System.Data;
-using System.Collections.Generic;
-using System.Configuration;
-
-using AppKit;
+﻿using AppKit;
 using Foundation;
 using MySqlConnector;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 
+using CorsovaiBD.Models;
 namespace CorsovaiBD
 {
     public partial class ViewController : NSViewController
     {
+        private readonly List<string> tableNames = new List<string>();
+        private readonly MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder
+        {
+            Server = ConfigurationManager.AppSettings["Server"],
+            UserID = ConfigurationManager.AppSettings["UserID"],
+            Password = ConfigurationManager.AppSettings["Password"],
+            Database = ConfigurationManager.AppSettings["Database"]
+        };
+        private MyTableDataSource dataSource;
 
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -20,39 +29,50 @@ namespace CorsovaiBD
         {
             base.ViewDidLoad();
 
-            //// Do any additional setup after loading the view.
+            // Do any additional setup after loading the view.
+            LoadTableNames();
+           
+            ComboBox.UsesDataSource = true;
+            ComboBox.DataSource = new ComboBoxDataSource(tableNames, ComboBox);
+            ComboBox.Activated += ComboBox_Activated;
+
+            TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
+            TableView.SizeToFit();
         }
 
-        public override NSObject RepresentedObject
+        private void LoadTableNames()
         {
-            get
+            using var connection = new MySqlConnection(builder.ConnectionString);
+            connection.Open();
+            MySqlCommand command = new MySqlCommand("SHOW TABLES", connection);
+            MySqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
             {
-                return base.RepresentedObject;
-            }
-            set
-            {
-                base.RepresentedObject = value;
-                // Update the view, if already loaded.
+                string tableName = reader.GetString(0);
+                Console.WriteLine(tableName);
+                tableNames.Add(tableName);
             }
         }
 
-        partial void initDatabase(NSButton sender)
+        private void ComboBox_Activated(object sender, EventArgs e)
         {
+            var selectedTableName = tableNames[(int)ComboBox.SelectedIndex];
+            var query = $"SELECT * FROM {selectedTableName}";
 
+            using var connection = new MySqlConnection(builder.ConnectionString);
+            connection.Open();
 
-            var builder = new MySqlConnectionStringBuilder
-            {
-                Server = ConfigurationManager.AppSettings["Server"],
-                UserID = ConfigurationManager.AppSettings["UserID"],
-                Password = ConfigurationManager.AppSettings["Password"],
-                Database = ConfigurationManager.AppSettings["Database"]
-            };
-            string query = "SELECT * FROM Addresses";
-            MySqlDataAdapter adapter = new MySqlDataAdapter(query, builder.ConnectionString);
-            DataSet ds = new DataSet("Lab_11_ver_@");
+            var adapter = new MySqlDataAdapter(query, connection);
+            var ds = new DataSet();
             adapter.Fill(ds);
 
             var table = ds.Tables[0];
+
+            while (TableView.TableColumns().Length > 0)
+            {
+                TableView.RemoveColumn(TableView.TableColumns()[0]);
+            }
+
 
             foreach (DataColumn column in table.Columns)
             {
@@ -65,34 +85,11 @@ namespace CorsovaiBD
                 TableView.AddColumn(tableColumn);
             }
 
-            var dataSource = new MyTableDataSource(table);
+            dataSource = new MyTableDataSource(table);
             TableView.DataSource = dataSource;
-
+            TableView.ReloadData();
         }
+    }
 
-
-
-        }
+    
 }
-
-public class MyTableDataSource : NSTableViewDataSource
-{
-    private readonly DataTable _table;
-
-    public MyTableDataSource(DataTable table)
-    {
-        _table = table;
-    }
-
-    public override nint GetRowCount(NSTableView tableView)
-    {
-        return _table.Rows.Count;
-    }
-
-    public override NSObject GetObjectValue(NSTableView tableView, NSTableColumn tableColumn, nint row)
-    {
-        string columnName = tableColumn.Identifier;
-        return new NSString(_table.Rows[(int)row][columnName].ToString());
-    }
-}
-

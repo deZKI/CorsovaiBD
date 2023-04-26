@@ -441,21 +441,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="800" height="500"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="44" horizontalPageScroll="10" verticalLineScroll="44" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DSn-58-xtu">
+                            <scrollView fixedFrame="YES" borderType="groove" autohidesScrollers="YES" horizontalLineScroll="44" horizontalPageScroll="10" verticalLineScroll="44" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DSn-58-xtu">
                                 <rect key="frame" x="20" y="63" width="760" height="400"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <clipView key="contentView" translatesAutoresizingMaskIntoConstraints="NO" id="kbU-4P-6jT">
-                                    <rect key="frame" x="1" y="1" width="758" height="398"/>
+                                <clipView key="contentView" drawsBackground="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbU-4P-6jT">
+                                    <rect key="frame" x="2" y="2" width="756" height="396"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" tableStyle="fullWidth" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" usesAutomaticRowHeights="YES" headerView="OpC-rw-hTn" id="we0-RL-rR0">
-                                            <rect key="frame" x="0.0" y="0.0" width="758" height="370"/>
+                                        <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" tableStyle="fullWidth" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="medium" headerView="OpC-rw-hTn" id="we0-RL-rR0">
+                                            <rect key="frame" x="0.0" y="0.0" width="756" height="368"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="20" height="20"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                         </tableView>
                                     </subviews>
+                                    <nil key="backgroundColor"/>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="rBH-yx-QXJ">
                                     <rect key="frame" x="1" y="132" width="309" height="16"/>
@@ -466,29 +467,29 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <tableHeaderView key="headerView" wantsLayer="YES" id="OpC-rw-hTn">
-                                    <rect key="frame" x="0.0" y="0.0" width="758" height="28"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="756" height="28"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableHeaderView>
                             </scrollView>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xIX-zN-3JL">
-                                <rect key="frame" x="350" y="13" width="100" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                <buttonCell key="cell" type="push" title="InitializeBd" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="okv-IO-lMd">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ofm-nP-wlz">
+                                <rect key="frame" x="19" y="18" width="164" height="23"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="left" placeholderString="Выберите таблицу" bezelStyle="round" completes="NO" numberOfVisibleItems="10" id="bBL-uQ-n0z">
                                     <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="initDatabase:" target="XfG-lQ-9wD" id="ZIu-bP-tV4"/>
-                                </connections>
-                            </button>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </comboBoxCell>
+                            </comboBox>
                         </subviews>
                     </view>
                     <connections>
+                        <outlet property="ComboBox" destination="ofm-nP-wlz" id="hqL-dC-cqW"/>
+                        <outlet property="ComboxTables" destination="bBL-uQ-n0z" id="aYz-4e-Ybp"/>
                         <outlet property="TableView" destination="we0-RL-rR0" id="bUY-eq-X79"/>
+                        <outlet property="СomboBox" destination="ofm-nP-wlz" id="FlU-P1-fSB"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <arrayController id="svb-k1-hie"/>
             </objects>
             <point key="canvasLocation" x="87" y="835"/>
         </scene>
