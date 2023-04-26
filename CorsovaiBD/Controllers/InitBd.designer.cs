@@ -12,11 +12,18 @@ namespace CorsovaiBD
 	[Register ("ViewController")]
 	partial class ViewController
 	{
+		[Outlet]
+		AppKit.NSTableView TableView { get; set; }
+
 		[Action ("initDatabase:")]
 		partial void initDatabase (AppKit.NSButton sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (TableView != null) {
+				TableView.Dispose ();
+				TableView = null;
+			}
 		}
 	}
 }
