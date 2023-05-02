@@ -480,6 +480,17 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </comboBoxCell>
                             </comboBox>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZT7-ma-JfX">
+                                <rect key="frame" x="187" y="13" width="55" height="32"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <buttonCell key="cell" type="push" title="+" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Y9j-mk-4Z8">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <segue destination="Lwc-aS-ISP" kind="modal" id="Wtf-J9-O2P"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -492,6 +503,19 @@
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="87" y="835"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="tkh-Z1-ytL">
+            <objects>
+                <viewController id="Lwc-aS-ISP" sceneMemberID="viewController">
+                    <view key="view" id="dCP-oO-lve">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="NlG-gA-7ED" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-75" y="1416"/>
         </scene>
     </scenes>
 </document>
