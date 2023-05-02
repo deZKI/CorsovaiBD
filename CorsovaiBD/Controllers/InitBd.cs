@@ -31,10 +31,10 @@ namespace CorsovaiBD
 
             // Do any additional setup after loading the view.
             LoadTableNames();
-           
-            ComboBox.UsesDataSource = true;
-            ComboBox.DataSource = new ComboBoxDataSource(tableNames, ComboBox);
-            ComboBox.Activated += ComboBox_Activated;
+
+            TableComboBox.UsesDataSource = true;
+            TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
+            TableComboBox.Activated += ShowSelectedTable;
 
             TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
             TableView.SizeToFit();
@@ -54,9 +54,9 @@ namespace CorsovaiBD
             }
         }
 
-        private void ComboBox_Activated(object sender, EventArgs e)
+        private void ShowSelectedTable(object sender, EventArgs e)
         {
-            var selectedTableName = tableNames[(int)ComboBox.SelectedIndex];
+            var selectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
             var query = $"SELECT * FROM {selectedTableName}";
 
             using var connection = new MySqlConnection(builder.ConnectionString);

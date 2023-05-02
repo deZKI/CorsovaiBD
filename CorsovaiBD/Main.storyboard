@@ -496,6 +496,7 @@
                     <connections>
                         <outlet property="ComboBox" destination="ofm-nP-wlz" id="hqL-dC-cqW"/>
                         <outlet property="ComboxTables" destination="bBL-uQ-n0z" id="aYz-4e-Ybp"/>
+                        <outlet property="TableComboBox" destination="ofm-nP-wlz" id="hdH-Zb-Dl3"/>
                         <outlet property="TableView" destination="we0-RL-rR0" id="bUY-eq-X79"/>
                         <outlet property="СomboBox" destination="ofm-nP-wlz" id="FlU-P1-fSB"/>
                     </connections>

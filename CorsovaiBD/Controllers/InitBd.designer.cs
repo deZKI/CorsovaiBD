@@ -13,7 +13,7 @@ namespace CorsovaiBD
 	partial class ViewController
 	{
 		[Outlet]
-		AppKit.NSComboBox ComboBox { get; set; }
+		AppKit.NSComboBox TableComboBox { get; set; }
 
 		[Outlet]
 		AppKit.NSTableView TableView { get; set; }
@@ -23,9 +23,9 @@ namespace CorsovaiBD
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (ComboBox != null) {
-				ComboBox.Dispose ();
-				ComboBox = null;
+			if (TableComboBox != null) {
+				TableComboBox.Dispose ();
+				TableComboBox = null;
 			}
 
 			if (TableView != null) {
