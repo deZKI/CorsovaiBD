@@ -140,6 +140,7 @@
     <Compile Include="Forms\AddRowForm.designer.cs">
       <DependentUpon>AddRowForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\ForeignKeyColumn.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

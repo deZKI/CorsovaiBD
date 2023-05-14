@@ -1,5 +1,4 @@
 using System;
-
 using Foundation;
 using AppKit;
 using CorsovaiBD.Models;
@@ -9,6 +8,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Configuration;
 using System.Data;
+using System.Linq;
 
 namespace CorsovaiBD
 {
@@ -21,63 +21,97 @@ namespace CorsovaiBD
             Password = ConfigurationManager.AppSettings["Password"],
             Database = ConfigurationManager.AppSettings["Database"]
         };
-        public AddRowForm(IntPtr handle) : base(handle) {
+        public AddRowForm(IntPtr handle) : base(handle)
+        {
         }
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-
+          
             // Создаем и настраиваем элементы пользовательского интерфейса (метки, поля ввода, кнопку "Добавить")
             var xPos = 20f;
-            var yPos = 300f;
+            var yPos = 500f;
             var labelWidth = 100f;
             var inputWidth = 150f;
             var inputHeight = 22f;
             var margin = 30f;
 
-            using (var connection = new MySqlConnection(builder.ConnectionString))
+            using var connection = new MySqlConnection(builder.ConnectionString);
+            connection.Open();
+            var query = $"SELECT * FROM {ViewController.SelectedTableName}";
+            var adapter = new MySqlDataAdapter(query, connection);
+            var ds = new DataSet();
+            adapter.Fill(ds);
+
+            var table = ds.Tables[0];
+            var columns = table.Columns;
+
+            // Получаем список внешних ключей для выбранной таблицы
+            var foreignKeys = GetForeignKeys(connection, ViewController.SelectedTableName);
+
+            foreach (DataColumn column in columns)
             {
-                connection.Open();
-                var query = $"SELECT * FROM {ViewController.SelectedTableName}";
-                var adapter = new MySqlDataAdapter(query, connection);
-                var ds = new DataSet();
-                adapter.Fill(ds);
+                var columnName = (string)column.ColumnName;
 
-                var table = ds.Tables[0];
-                var columns = table.Columns;
-
-                foreach (DataColumn column in columns)
+                var label = new NSTextField(new CGRect(xPos, yPos, labelWidth, inputHeight))
                 {
-                    var columnName = (string)column.ColumnName;
+                    StringValue = columnName,
+                    Editable = false,
+                    Bordered = false,
+                    Selectable = false,
+                    DrawsBackground = false
+                };
+                View.AddSubview(label);
 
-                    var label = new NSTextField(new CGRect(xPos, yPos, labelWidth, inputHeight))
+                if (foreignKeys.Any(fk => fk.ColumnName == columnName))
+                {
+                    // Создаем комбобокс для внешнего ключа и заполняем его значениями из связанной таблицы
+                    var comboBox = new NSComboBox(new CGRect(xPos + labelWidth + margin, yPos, inputWidth, inputHeight));
+                    comboBox.Identifier = new NSString(columnName);
+                    comboBox.Editable = true;
+
+                    var foreignKey = foreignKeys.First(fk => fk.ColumnName == columnName);
+                    var referencedTable = foreignKey.ReferencedTableName;
+                    var referencedColumn = foreignKey.ReferencedColumnName;
+                    var referencedQuery = $"SELECT {referencedColumn} FROM {referencedTable}";
+                    var referencedAdapter = new MySqlDataAdapter(referencedQuery, connection);
+                    var referencedDs = new DataSet();
+                    referencedAdapter.Fill(referencedDs);
+                    var referencedTableData = referencedDs.Tables[0];
+                    foreach (DataRow row in referencedTableData.Rows)
                     {
-                        StringValue = columnName,
-                        Editable = false,
-                        Bordered = false,
-                        Selectable = false,
-                        DrawsBackground = false
-                    };
-                    View.AddSubview(label);
+                        comboBox.Add(new NSString(row[referencedColumn].ToString()));
+                    }
 
+                    View.AddSubview(comboBox);
+                }
+                else
+                {
+                    // Создаем текстовое поле для обычного столбца
                     var input = new NSTextField(new CGRect(xPos + labelWidth + margin, yPos, inputWidth, inputHeight))
                     {
                         Identifier = new NSString(columnName)
                     };
-                    View.AddSubview(input);
 
-                    yPos -= (inputHeight + margin);
+                    View.AddSubview(input);
                 }
+
+                yPos -= (inputHeight + margin);
             }
 
-            var addButton = new NSButton(new CGRect(xPos, yPos - margin, 100f, inputHeight))
+
+            var addButton = new NSButton(new CGRect(350, 500f, 100f, inputHeight))
             {
                 Title = "Добавить",
                 BezelStyle = NSBezelStyle.Rounded
             };
             addButton.Activated += AddRow;
             View.AddSubview(addButton);
+
+
         }
+
 
         private void AddRow(object sender, EventArgs e)
         {
@@ -86,29 +120,40 @@ namespace CorsovaiBD
                 using (var connection = new MySqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
-                    var query = $"INSERT INTO {ViewController.SelectedTableName} (";
-                    var values = "VALUES (";
 
+                    var dataTable = new DataTable(ViewController.SelectedTableName);
+
+                    // Заполняем столбцы DataTable на основе NSTextField'ов
                     foreach (var subview in View.Subviews)
                     {
                         if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
                         {
                             var columnName = input.Identifier.ToString();
-                            var columnValue = input.StringValue;
-
-                            query += $"{columnName}, ";
-                            values += $"'{columnValue}', ";
+                            dataTable.Columns.Add(columnName);
                         }
                     }
 
-                    //Remove trailing comma and space
-                    query = query.Remove(query.Length - 2);
-                    values = values.Remove(values.Length - 2);
+                    // Создаем новую строку и заполняем ее значениями из NSTextField'ов
+                    var row = dataTable.NewRow();
+                    foreach (var subview in View.Subviews)
+                    {
+                        if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
+                        {
+                            var columnName = input.Identifier.ToString();
+                            row[columnName] = input.StringValue;
+                        }
+                    }
 
-                    query += ") " + values + ")";
+                    // Добавляем новую строку в таблицу
+                    dataTable.Rows.Add(row);
 
-                    var command = new MySqlCommand(query, connection);
-                    command.ExecuteNonQuery();
+                    var adapter = new MySqlDataAdapter($"SELECT * FROM {ViewController.SelectedTableName}", connection);
+
+                    // Создаем объект MySqlCommandBuilder на основе адаптера, чтобы автоматически генерировать InsertCommand
+                    var builder = new MySqlCommandBuilder(adapter);
+
+                    // Добавляем новую строку в таблицу
+                    adapter.Update(dataTable);
 
                     // Закрываем форму добавления новой строки
                     DismissViewController(this);
@@ -125,6 +170,38 @@ namespace CorsovaiBD
                 };
                 alert.RunModal();
             }
+        }
+
+        public static List<ForeignKeyColumn> GetForeignKeys(MySqlConnection connection, string tableName)
+        {
+            var foreignKeys = new List<ForeignKeyColumn>();
+
+            var query = $@"
+        SELECT 
+            COLUMN_NAME, 
+            REFERENCED_TABLE_NAME, 
+            REFERENCED_COLUMN_NAME 
+        FROM information_schema.KEY_COLUMN_USAGE 
+        WHERE 
+            TABLE_SCHEMA = '{connection.Database}' AND 
+            TABLE_NAME = '{tableName}' AND 
+            REFERENCED_TABLE_NAME IS NOT NULL;
+    ";
+            var command = new MySqlCommand(query, connection);
+
+            using var reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var columnName = reader.GetString("COLUMN_NAME");
+                var referencedTableName = reader.GetString("REFERENCED_TABLE_NAME");
+                var referencedColumnName = reader.GetString("REFERENCED_COLUMN_NAME");
+
+                var foreignKeyColumn = new ForeignKeyColumn(columnName, referencedTableName, referencedColumnName);
+                foreignKeys.Add(foreignKeyColumn);
+            }
+
+            return foreignKeys;
         }
     }
 }
