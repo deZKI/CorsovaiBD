@@ -7,11 +7,14 @@ using System.Configuration;
 using System.Data;
 
 using CorsovaiBD.Models;
+using CoreGraphics;
+
 namespace CorsovaiBD
 {
     public partial class ViewController : NSViewController
     {
         private readonly List<string> tableNames = new List<string>();
+        public static string SelectedTableName;
         private readonly MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder
         {
             Server = ConfigurationManager.AppSettings["Server"],
@@ -20,26 +23,6 @@ namespace CorsovaiBD
             Database = ConfigurationManager.AppSettings["Database"]
         };
         private MyTableDataSource dataSource;
-
-        public ViewController(IntPtr handle) : base(handle)
-        {
-        }
-
-        public override void ViewDidLoad()
-        {
-            base.ViewDidLoad();
-
-            // Do any additional setup after loading the view.
-            LoadTableNames();
-
-            TableComboBox.UsesDataSource = true;
-            TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
-            TableComboBox.Activated += ShowSelectedTable;
-
-            TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
-            TableView.SizeToFit();
-        }
-
         private void LoadTableNames()
         {
             using var connection = new MySqlConnection(builder.ConnectionString);
@@ -49,15 +32,13 @@ namespace CorsovaiBD
             while (reader.Read())
             {
                 string tableName = reader.GetString(0);
-                Console.WriteLine(tableName);
                 tableNames.Add(tableName);
             }
         }
-
         private void ShowSelectedTable(object sender, EventArgs e)
         {
-            var selectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
-            var query = $"SELECT * FROM {selectedTableName}";
+            SelectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
+            var query = $"SELECT * FROM {SelectedTableName}";
 
             using var connection = new MySqlConnection(builder.ConnectionString);
             connection.Open();
@@ -88,7 +69,29 @@ namespace CorsovaiBD
             dataSource = new MyTableDataSource(table);
             TableView.DataSource = dataSource;
             TableView.ReloadData();
+
+           
         }
+        public ViewController(IntPtr handle) : base(handle)
+        {
+        }
+
+
+
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+            // Do any additional setup after loading the view.
+            LoadTableNames();
+
+            TableComboBox.UsesDataSource = true;
+            TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
+            TableComboBox.Activated += ShowSelectedTable;
+
+            TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
+            TableView.SizeToFit();
+        }
+
     }
 
     

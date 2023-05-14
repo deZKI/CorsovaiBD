@@ -480,43 +480,43 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </comboBoxCell>
                             </comboBox>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZT7-ma-JfX">
-                                <rect key="frame" x="187" y="13" width="55" height="32"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <buttonCell key="cell" type="push" title="+" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Y9j-mk-4Z8">
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vYl-6T-Hu3">
+                                <rect key="frame" x="192" y="12" width="43" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="+" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4BO-E8-b2r">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="Lwc-aS-ISP" kind="modal" id="Wtf-J9-O2P"/>
+                                    <segue destination="9BG-K8-nNh" kind="modal" id="M2C-xl-wXH"/>
                                 </connections>
                             </button>
                         </subviews>
                     </view>
                     <connections>
-                        <outlet property="ComboBox" destination="ofm-nP-wlz" id="hqL-dC-cqW"/>
+                        <outlet property="AddRow" destination="vYl-6T-Hu3" id="iLv-N7-pgt"/>
                         <outlet property="ComboxTables" destination="bBL-uQ-n0z" id="aYz-4e-Ybp"/>
-                        <outlet property="TableComboBox" destination="ofm-nP-wlz" id="hdH-Zb-Dl3"/>
+                        <outlet property="TableComboBox" destination="ofm-nP-wlz" id="SWI-iY-VeX"/>
                         <outlet property="TableView" destination="we0-RL-rR0" id="bUY-eq-X79"/>
-                        <outlet property="СomboBox" destination="ofm-nP-wlz" id="FlU-P1-fSB"/>
+                        <outlet property="_AddRow" destination="vYl-6T-Hu3" id="RGA-jg-ymL"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="87" y="835"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="tkh-Z1-ytL">
+        <!--Добавить Строку-->
+        <scene sceneID="ZFJ-ZF-bX9">
             <objects>
-                <viewController id="Lwc-aS-ISP" sceneMemberID="viewController">
-                    <view key="view" id="dCP-oO-lve">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                <customObject id="Erj-8N-UcC" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <viewController title="Добавить Строку" id="9BG-K8-nNh" customClass="AddRowForm" sceneMemberID="viewController">
+                    <view key="view" id="Epu-2q-7nl">
+                        <rect key="frame" x="0.0" y="0.0" width="1091" height="551"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </view>
                 </viewController>
-                <customObject id="NlG-gA-7ED" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-75" y="1416"/>
+            <point key="canvasLocation" x="179.5" y="1551.5"/>
         </scene>
     </scenes>
 </document>
