@@ -511,12 +511,12 @@
                 <customObject id="Erj-8N-UcC" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <viewController title="Добавить Строку" id="9BG-K8-nNh" customClass="AddRowForm" sceneMemberID="viewController">
                     <view key="view" id="Epu-2q-7nl">
-                        <rect key="frame" x="0.0" y="0.0" width="1091" height="651"/>
+                        <rect key="frame" x="0.0" y="0.0" width="465" height="651"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </view>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="179.5" y="1601.5"/>
+            <point key="canvasLocation" x="-133.5" y="1601.5"/>
         </scene>
     </scenes>
 </document>

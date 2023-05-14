@@ -120,40 +120,29 @@ namespace CorsovaiBD
                 using (var connection = new MySqlConnection(builder.ConnectionString))
                 {
                     connection.Open();
+                    var query = $"INSERT INTO {ViewController.SelectedTableName} (";
+                    var values = "VALUES (";
 
-                    var dataTable = new DataTable(ViewController.SelectedTableName);
-
-                    // Заполняем столбцы DataTable на основе NSTextField'ов
                     foreach (var subview in View.Subviews)
                     {
                         if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
                         {
                             var columnName = input.Identifier.ToString();
-                            dataTable.Columns.Add(columnName);
+                            var columnValue = input.StringValue;
+
+                            query += $"{columnName}, ";
+                            values += $"'{columnValue}', ";
                         }
                     }
 
-                    // Создаем новую строку и заполняем ее значениями из NSTextField'ов
-                    var row = dataTable.NewRow();
-                    foreach (var subview in View.Subviews)
-                    {
-                        if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
-                        {
-                            var columnName = input.Identifier.ToString();
-                            row[columnName] = input.StringValue;
-                        }
-                    }
+                    //Remove trailing comma and space
+                    query = query.Remove(query.Length - 2);
+                    values = values.Remove(values.Length - 2);
 
-                    // Добавляем новую строку в таблицу
-                    dataTable.Rows.Add(row);
+                    query += ") " + values + ")";
 
-                    var adapter = new MySqlDataAdapter($"SELECT * FROM {ViewController.SelectedTableName}", connection);
-
-                    // Создаем объект MySqlCommandBuilder на основе адаптера, чтобы автоматически генерировать InsertCommand
-                    var builder = new MySqlCommandBuilder(adapter);
-
-                    // Добавляем новую строку в таблицу
-                    adapter.Update(dataTable);
+                    var command = new MySqlCommand(query, connection);
+                    command.ExecuteNonQuery();
 
                     // Закрываем форму добавления новой строки
                     DismissViewController(this);
