@@ -43,33 +43,46 @@ namespace CorsovaiBD
             using var connection = new MySqlConnection(builder.ConnectionString);
             connection.Open();
 
-            var adapter = new MySqlDataAdapter(query, connection);
-            var ds = new DataSet();
-            adapter.Fill(ds);
-
-            var table = ds.Tables[0];
+            var command = new MySqlCommand(query, connection);
+            var reader = command.ExecuteReader();
 
             while (TableView.TableColumns().Length > 0)
             {
                 TableView.RemoveColumn(TableView.TableColumns()[0]);
             }
+            var dataRows = new DataTable();
 
-
-            foreach (DataColumn column in table.Columns)
+            for (int i = 0; i < reader.FieldCount; i++)
             {
-                var columnId = new NSString(column.ColumnName);
+                var columnName = reader.GetName(i);
+                var columnType = reader.GetFieldType(i);
+                dataRows.Columns.Add(new DataColumn(columnName, columnType));
+
+                var columnId = new NSString(columnName);
                 var tableColumn = new NSTableColumn(columnId)
                 {
-                    HeaderCell = new NSTableHeaderCell { Title = column.ColumnName },
-                    Identifier = column.ColumnName
+                    HeaderCell = new NSTableHeaderCell { Title = columnName },
+                    Identifier = columnName
                 };
                 TableView.AddColumn(tableColumn);
             }
 
-            dataSource = new MyTableDataSource(table);
+            
+            while (reader.Read())
+            {
+                var row = dataRows.NewRow();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    row[i] = reader.GetValue(i);
+                }
+                dataRows.Rows.Add(row);
+            }
+
+            dataSource = new MyTableDataSource(dataRows);
             TableView.DataSource = dataSource;
             TableView.ReloadData();
 
+<<<<<<< HEAD:CorsovaiBD/Controllers/ViewController.cs
            
         }
         public ViewController(IntPtr handle) : base(handle)
@@ -91,8 +104,11 @@ namespace CorsovaiBD
             TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
             TableView.SizeToFit();
         }
+=======
+        }
+>>>>>>> github/connected_level:CorsovaiBD/Controllers/InitBd.cs
 
     }
 
-    
+
 }
