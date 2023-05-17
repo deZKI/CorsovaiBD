@@ -13,9 +13,10 @@ namespace CorsovaiBD
 {
     public partial class ViewController : NSViewController
     {
+
         private readonly List<string> tableNames = new List<string>();
         public static string SelectedTableName;
-        private readonly MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder
+        public static readonly MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder
         {
             Server = ConfigurationManager.AppSettings["Server"],
             UserID = ConfigurationManager.AppSettings["UserID"],
@@ -23,6 +24,7 @@ namespace CorsovaiBD
             Database = ConfigurationManager.AppSettings["Database"]
         };
         private MyTableDataSource dataSource;
+
         private void LoadTableNames()
         {
             using var connection = new MySqlConnection(builder.ConnectionString);
@@ -34,6 +36,7 @@ namespace CorsovaiBD
                 string tableName = reader.GetString(0);
                 tableNames.Add(tableName);
             }
+         
         }
         private void ShowSelectedTable(object sender, EventArgs e)
         {
@@ -76,7 +79,17 @@ namespace CorsovaiBD
         {
         }
 
-
+        partial void DeleteRowButton(NSObject sender)
+        {
+            var selectedRow = TableView.SelectedRow;
+            Console.WriteLine(selectedRow);
+            if (selectedRow >= 0)
+            {
+                TableView.BeginUpdates();
+                TableView.RemoveRows(new NSIndexSet(selectedRow), NSTableViewAnimation.SlideRight);
+                TableView.EndUpdates();
+            }
+        }
 
         public override void ViewDidLoad()
         {

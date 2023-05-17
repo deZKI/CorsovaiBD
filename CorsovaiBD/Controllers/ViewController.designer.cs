@@ -20,6 +20,9 @@ namespace CorsovaiBD
 
 		[Outlet]
 		AppKit.NSTableView TableView { get; set; }
+
+		[Action ("DeleteRowButton:")]
+		partial void DeleteRowButton (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -39,5 +42,4 @@ namespace CorsovaiBD
 			}
 		}
 	}
-
 }

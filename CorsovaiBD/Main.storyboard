@@ -491,11 +491,25 @@
                                     <segue destination="9BG-K8-nNh" kind="modal" id="M2C-xl-wXH"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xxb-sy-dKV">
+                                <rect key="frame" x="233" y="13" width="43" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="-" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Dcl-wq-Lkf">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <action selector="DeleteRowButton:" target="XfG-lQ-9wD" id="nLG-ZI-kNa"/>
+                                    </connections>
+                                </buttonCell>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="AddRow" destination="vYl-6T-Hu3" id="iLv-N7-pgt"/>
+                        <outlet property="AddRowButton" destination="vYl-6T-Hu3" id="eFO-c6-ZwK"/>
                         <outlet property="ComboxTables" destination="bBL-uQ-n0z" id="aYz-4e-Ybp"/>
+                        <outlet property="DeleteRow" destination="Xxb-sy-dKV" id="olS-VV-lFZ"/>
+                        <outlet property="DeleteRowButton" destination="Xxb-sy-dKV" id="rMB-g9-nKP"/>
                         <outlet property="TableComboBox" destination="ofm-nP-wlz" id="SWI-iY-VeX"/>
                         <outlet property="TableView" destination="we0-RL-rR0" id="bUY-eq-X79"/>
                         <outlet property="_AddRow" destination="vYl-6T-Hu3" id="RGA-jg-ymL"/>

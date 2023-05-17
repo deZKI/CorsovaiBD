@@ -10,7 +10,7 @@ namespace CorsovaiBD.Models
         public string ColumnName { get; set; }
         public string ReferencedTableName { get; set; }
         public string ReferencedColumnName { get; set; }
-
+        public string AllCollums { get; set; }
         public ForeignKeyColumn(string columnName, string referencedTableName, string referencedColumnName)
         {
             ColumnName = columnName;
