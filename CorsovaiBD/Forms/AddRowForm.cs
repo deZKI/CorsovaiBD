@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace CorsovaiBD
 {
@@ -162,6 +163,7 @@ namespace CorsovaiBD
 
                     // Добавляем новую строку в таблицу
                     adapter.Update(dataTable);
+                   
 
                     // Закрываем форму добавления новой строки
                     DismissViewController(this);

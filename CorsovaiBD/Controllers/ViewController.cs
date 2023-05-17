@@ -81,16 +81,73 @@ namespace CorsovaiBD
 
         partial void DeleteRowButton(NSObject sender)
         {
+            try { 
             var selectedRow = TableView.SelectedRow;
-            Console.WriteLine(selectedRow);
-            if (selectedRow >= 0)
+            var query = $"SELECT * FROM {SelectedTableName}";
+
+            using var connection = new MySqlConnection(builder.ConnectionString);
+            connection.Open();
+
+            var adapter = new MySqlDataAdapter(query, connection);
+            var ds = new DataSet();
+            adapter.Fill(ds);
+            var table = ds.Tables[0];
+
+
+                // Создаем объект MySqlCommandBuilder на основе адаптера, чтобы автоматически генерировать InsertCommand
+            var builderr = new MySqlCommandBuilder(adapter);
+            ds.Tables[0].Rows[((int)selectedRow)].Delete();
+            adapter.Update(ds.Tables[0]);
+            ds.Tables[0].AcceptChanges();
+            dataSource = new MyTableDataSource(table);
+            TableView.DataSource = dataSource;
+            TableView.ReloadData();
+
+            }
+            catch (Exception ex)
             {
-                TableView.BeginUpdates();
-                TableView.RemoveRows(new NSIndexSet(selectedRow), NSTableViewAnimation.SlideRight);
-                TableView.EndUpdates();
+                // Отображаем окно с ошибкой
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = ex.Message,
+                    MessageText = "Ошибка"
+                };
+                alert.RunModal();
             }
         }
 
+        partial void ReloadButton(NSObject sender)
+        {
+            try
+            {
+                SelectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
+                var query = $"SELECT * FROM {SelectedTableName}";
+
+                using var connection = new MySqlConnection(builder.ConnectionString);
+                connection.Open();
+
+                var adapter = new MySqlDataAdapter(query, connection);
+                var ds = new DataSet();
+                adapter.Fill(ds);
+
+                var table = ds.Tables[0];
+                dataSource = new MyTableDataSource(table);
+                TableView.DataSource = dataSource;
+                TableView.ReloadData();
+            }
+            catch (Exception ex)
+            {
+                // Отображаем окно с ошибкой
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = ex.Message,
+                    MessageText = "Ошибка"
+                };
+                alert.RunModal();
+            }
+        }
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();

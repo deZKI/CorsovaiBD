@@ -23,6 +23,9 @@ namespace CorsovaiBD
 
 		[Action ("DeleteRowButton:")]
 		partial void DeleteRowButton (Foundation.NSObject sender);
+
+		[Action ("ReloadButton:")]
+		partial void ReloadButton (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
