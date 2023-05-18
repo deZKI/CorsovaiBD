@@ -93,8 +93,6 @@ namespace CorsovaiBD
             adapter.Fill(ds);
             var table = ds.Tables[0];
 
-
-                // Создаем объект MySqlCommandBuilder на основе адаптера, чтобы автоматически генерировать InsertCommand
             var builderr = new MySqlCommandBuilder(adapter);
             ds.Tables[0].Rows[((int)selectedRow)].Delete();
             adapter.Update(ds.Tables[0]);
