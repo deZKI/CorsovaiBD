@@ -16,6 +16,27 @@ namespace CorsovaiBD
 		AppKit.NSButton AddRow { get; set; }
 
 		[Outlet]
+		AppKit.NSButton rbBegin { get; set; }
+
+		[Outlet]
+		AppKit.NSButton rbContain { get; set; }
+
+		[Outlet]
+		AppKit.NSButton rbEqual { get; set; }
+
+		[Outlet]
+		AppKit.NSButton rbLess { get; set; }
+
+		[Outlet]
+		AppKit.NSButton rbLessEqual { get; set; }
+
+		[Outlet]
+		AppKit.NSButton rbMore { get; set; }
+
+		[Outlet]
+		AppKit.NSButton rbMoreEqual { get; set; }
+
+		[Outlet]
 		AppKit.NSComboBox SearchColumnsComboBox { get; set; }
 
 		[Outlet]
@@ -26,6 +47,9 @@ namespace CorsovaiBD
 
 		[Outlet]
 		AppKit.NSTableView TableView { get; set; }
+
+		[Action ("Check:")]
+		partial void Check (Foundation.NSObject sender);
 
 		[Action ("DeleteRowButton:")]
 		partial void DeleteRowButton (Foundation.NSObject sender);
@@ -41,19 +65,54 @@ namespace CorsovaiBD
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (SearchCondition != null) {
-				SearchCondition.Dispose ();
-				SearchCondition = null;
-			}
-
 			if (AddRow != null) {
 				AddRow.Dispose ();
 				AddRow = null;
 			}
 
+			if (rbBegin != null) {
+				rbBegin.Dispose ();
+				rbBegin = null;
+			}
+
+			if (rbContain != null) {
+				rbContain.Dispose ();
+				rbContain = null;
+			}
+
+			if (rbEqual != null) {
+				rbEqual.Dispose ();
+				rbEqual = null;
+			}
+
+			if (rbLess != null) {
+				rbLess.Dispose ();
+				rbLess = null;
+			}
+
+			if (rbLessEqual != null) {
+				rbLessEqual.Dispose ();
+				rbLessEqual = null;
+			}
+
+			if (rbMore != null) {
+				rbMore.Dispose ();
+				rbMore = null;
+			}
+
+			if (rbMoreEqual != null) {
+				rbMoreEqual.Dispose ();
+				rbMoreEqual = null;
+			}
+
 			if (SearchColumnsComboBox != null) {
 				SearchColumnsComboBox.Dispose ();
 				SearchColumnsComboBox = null;
+			}
+
+			if (SearchCondition != null) {
+				SearchCondition.Dispose ();
+				SearchCondition = null;
 			}
 
 			if (TableComboBox != null) {

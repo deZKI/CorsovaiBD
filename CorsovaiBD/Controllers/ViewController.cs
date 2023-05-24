@@ -9,6 +9,7 @@ using System.Data;
 using CorsovaiBD.Models;
 using CoreGraphics;
 using DotNetEnv;
+using System.Text;
 
 namespace CorsovaiBD
 {
@@ -180,6 +181,16 @@ namespace CorsovaiBD
             SearchCondition.StringValue = string.Empty;
             
 
+        }
+        partial void Check(NSObject sender)
+        {
+            if (sender is NSButton button)
+            {
+                Console.OutputEncoding = Encoding.UTF8;
+                string buttonTitle = button.Title.ToString();
+                Console.WriteLine(buttonTitle);
+                // дальнейшая обработка значения кнопки
+            }
         }
         public override void ViewDidLoad()
         {

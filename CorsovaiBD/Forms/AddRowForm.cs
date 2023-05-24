@@ -161,14 +161,14 @@ namespace CorsovaiBD
                     // Создаем объект MySqlCommandBuilder на основе адаптера, чтобы автоматически генерировать InsertCommand
                     var builder = new MySqlCommandBuilder(adapter);
 
-                   
+
 
                     // Добавляем новую строку в таблицу
                     adapter.Update(dataTable);
 
                     // Закрываем форму добавления новой строки
                     DismissViewController(this);
-                    
+                   
                 }
             }
             catch (Exception ex)
@@ -184,7 +184,7 @@ namespace CorsovaiBD
             }
         }
 
-
+       
 
         public static List<ForeignKeyColumn> GetForeignKeys(MySqlConnection connection, string tableName)
         {

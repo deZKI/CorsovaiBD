@@ -438,18 +438,18 @@
             <objects>
                 <viewController title="view" id="XfG-lQ-9wD" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="1038" height="500"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1038" height="508"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView fixedFrame="YES" borderType="groove" autohidesScrollers="YES" horizontalLineScroll="44" horizontalPageScroll="10" verticalLineScroll="44" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DSn-58-xtu">
-                                <rect key="frame" x="26" y="63" width="772" height="400"/>
+                                <rect key="frame" x="26" y="64" width="772" height="406"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <clipView key="contentView" drawsBackground="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbU-4P-6jT">
-                                    <rect key="frame" x="2" y="2" width="768" height="396"/>
+                                    <rect key="frame" x="2" y="2" width="768" height="402"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" tableStyle="fullWidth" alternatingRowBackgroundColors="YES" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="medium" headerView="OpC-rw-hTn" id="we0-RL-rR0">
-                                            <rect key="frame" x="0.0" y="0.0" width="768" height="368"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="768" height="374"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="20" height="20"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -472,7 +472,7 @@
                                 </tableHeaderView>
                             </scrollView>
                             <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ofm-nP-wlz">
-                                <rect key="frame" x="30" y="18" width="164" height="23"/>
+                                <rect key="frame" x="30" y="28" width="164" height="23"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" borderStyle="bezel" alignment="left" placeholderString="Выберите таблицу" bezelStyle="round" completes="NO" numberOfVisibleItems="10" id="bBL-uQ-n0z">
                                     <font key="font" metaFont="system"/>
@@ -481,7 +481,7 @@
                                 </comboBoxCell>
                             </comboBox>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vYl-6T-Hu3">
-                                <rect key="frame" x="192" y="12" width="43" height="32"/>
+                                <rect key="frame" x="192" y="23" width="43" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="+" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4BO-E8-b2r">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -491,19 +491,19 @@
                                     <segue destination="9BG-K8-nNh" kind="modal" id="M2C-xl-wXH"/>
                                 </connections>
                             </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vKH-dS-v6S">
-                                <rect key="frame" x="274" y="12" width="76" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="push" title="Reload" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5FM-nf-50l">
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3w2-uY-0Ig">
+                                <rect key="frame" x="817" y="327" width="163" height="32"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <buttonCell key="cell" type="push" title="Сбросить поиск" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FF1-I5-8BB">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="ReloadButton:" target="XfG-lQ-9wD" id="Hrv-gd-p6S"/>
+                                    <action selector="SearchReset:" target="XfG-lQ-9wD" id="EMN-l6-viy"/>
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xxb-sy-dKV">
-                                <rect key="frame" x="233" y="13" width="43" height="32"/>
+                                <rect key="frame" x="233" y="23" width="43" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="push" title="-" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Dcl-wq-Lkf">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -514,7 +514,7 @@
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8l4-Nj-1Nm">
-                                <rect key="frame" x="843" y="411" width="165" height="32"/>
+                                <rect key="frame" x="815" y="436" width="165" height="32"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <buttonCell key="cell" type="push" title="Найти" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="6Po-Lm-DrS">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -525,7 +525,7 @@
                                 </connections>
                             </button>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Thu-vr-vqt">
-                                <rect key="frame" x="851" y="367" width="150" height="28"/>
+                                <rect key="frame" x="823" y="392" width="150" height="28"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="9QZ-9a-DbT">
                                     <font key="font" metaFont="system"/>
@@ -534,7 +534,7 @@
                                 </textFieldCell>
                             </textField>
                             <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I6f-qh-Rje">
-                                <rect key="frame" x="851" y="335" width="153" height="23"/>
+                                <rect key="frame" x="823" y="368" width="153" height="23"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="49Z-a8-No3">
                                     <font key="font" metaFont="system"/>
@@ -547,37 +547,114 @@
                                     </objectValues>
                                 </comboBoxCell>
                             </comboBox>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3w2-uY-0Ig">
-                                <rect key="frame" x="845" y="302" width="163" height="32"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <buttonCell key="cell" type="push" title="Сбросить поиск" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="FF1-I5-8BB">
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N0R-Fn-Fvl">
+                                <rect key="frame" x="822" y="287" width="140" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="radio" title="По равенству" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" borderStyle="border" inset="2" id="Tsw-m5-uPs">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="Check:" target="XfG-lQ-9wD" id="OAc-gH-Qs7"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X5R-lh-IgK">
+                                <rect key="frame" x="822" y="261" width="140" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="radio" title="По вхождению" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="c6N-98-Rd4">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="Check:" target="XfG-lQ-9wD" id="XMk-ma-lUD"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JoM-dT-9DS">
+                                <rect key="frame" x="821" y="235" width="141" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="radio" title="Начинается с" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="rYq-1X-I6e">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="Check:" target="XfG-lQ-9wD" id="yjM-od-Vkh"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V33-16-LYI">
+                                <rect key="frame" x="822" y="209" width="140" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="radio" title="Больше" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="rC2-69-Zub">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="Check:" target="XfG-lQ-9wD" id="NDh-CB-tXy"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LR2-bd-eHV">
+                                <rect key="frame" x="822" y="183" width="140" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="radio" title="Больше равно" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="gYr-iy-piu">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="Check:" target="XfG-lQ-9wD" id="deg-eq-0ry"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6K3-kF-gyf">
+                                <rect key="frame" x="822" y="157" width="140" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="radio" title="Меньше" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="eml-q1-Clm">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="Check:" target="XfG-lQ-9wD" id="fZs-Ry-i63"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z9I-Mk-O9O">
+                                <rect key="frame" x="822" y="131" width="139" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="radio" title="Меньше равно" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="Iwk-j1-kSm">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="Check:" target="XfG-lQ-9wD" id="gFb-6f-XdA"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vKH-dS-v6S">
+                                <rect key="frame" x="274" y="23" width="129" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Перезагрузить" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="5FM-nf-50l">
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="SearchReset:" target="XfG-lQ-9wD" id="EMN-l6-viy"/>
+                                    <action selector="ReloadButton:" target="XfG-lQ-9wD" id="Hrv-gd-p6S"/>
                                 </connections>
                             </button>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="AddRow" destination="vYl-6T-Hu3" id="iLv-N7-pgt"/>
-                        <outlet property="AddRowButton" destination="vYl-6T-Hu3" id="eFO-c6-ZwK"/>
-                        <outlet property="ComboxTables" destination="bBL-uQ-n0z" id="aYz-4e-Ybp"/>
-                        <outlet property="DeleteRow" destination="Xxb-sy-dKV" id="olS-VV-lFZ"/>
-                        <outlet property="DeleteRowButton" destination="Xxb-sy-dKV" id="rMB-g9-nKP"/>
-                        <outlet property="SeachCondition" destination="Thu-vr-vqt" id="wY2-w9-RlC"/>
                         <outlet property="SearchColumnsComboBox" destination="I6f-qh-Rje" id="C6R-BT-RAV"/>
-                        <outlet property="SearchCondition" destination="Thu-vr-vqt" id="gz3-vu-kGZ"/>
+                        <outlet property="SearchCondition" destination="Thu-vr-vqt" id="VfA-Cl-5Qe"/>
                         <outlet property="TableComboBox" destination="ofm-nP-wlz" id="SWI-iY-VeX"/>
-                        <outlet property="TableList" destination="I6f-qh-Rje" id="2gz-V7-S5b"/>
                         <outlet property="TableView" destination="we0-RL-rR0" id="bUY-eq-X79"/>
-                        <outlet property="_AddRow" destination="vYl-6T-Hu3" id="RGA-jg-ymL"/>
+                        <outlet property="rbBegin" destination="JoM-dT-9DS" id="m6g-Gp-kcQ"/>
+                        <outlet property="rbContain" destination="X5R-lh-IgK" id="xH5-yd-xhD"/>
+                        <outlet property="rbEqual" destination="N0R-Fn-Fvl" id="7qT-SR-PRk"/>
+                        <outlet property="rbLess" destination="6K3-kF-gyf" id="u6Q-b5-ChT"/>
+                        <outlet property="rbLessEqual" destination="z9I-Mk-O9O" id="1rh-WS-NFh"/>
+                        <outlet property="rbMore" destination="V33-16-LYI" id="CL7-8B-EOU"/>
+                        <outlet property="rbMoreEqual" destination="LR2-bd-eHV" id="RfK-1z-pM4"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="206" y="835"/>
+            <point key="canvasLocation" x="206" y="831"/>
         </scene>
         <!--Добавить Строку-->
         <scene sceneID="ZFJ-ZF-bX9">
