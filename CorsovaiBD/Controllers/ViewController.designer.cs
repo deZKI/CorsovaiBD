@@ -16,6 +16,12 @@ namespace CorsovaiBD
 		AppKit.NSButton AddRow { get; set; }
 
 		[Outlet]
+		AppKit.NSComboBox SearchColumnsComboBox { get; set; }
+
+		[Outlet]
+		AppKit.NSTextField SearchCondition { get; set; }
+
+		[Outlet]
 		AppKit.NSComboBox TableComboBox { get; set; }
 
 		[Outlet]
@@ -26,12 +32,28 @@ namespace CorsovaiBD
 
 		[Action ("ReloadButton:")]
 		partial void ReloadButton (Foundation.NSObject sender);
+
+		[Action ("Search:")]
+		partial void Search (Foundation.NSObject sender);
+
+		[Action ("SearchReset:")]
+		partial void SearchReset (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (SearchCondition != null) {
+				SearchCondition.Dispose ();
+				SearchCondition = null;
+			}
+
 			if (AddRow != null) {
 				AddRow.Dispose ();
 				AddRow = null;
+			}
+
+			if (SearchColumnsComboBox != null) {
+				SearchColumnsComboBox.Dispose ();
+				SearchColumnsComboBox = null;
 			}
 
 			if (TableComboBox != null) {

@@ -8,6 +8,7 @@ using System.Data;
 
 using CorsovaiBD.Models;
 using CoreGraphics;
+using DotNetEnv;
 
 namespace CorsovaiBD
 {
@@ -15,6 +16,7 @@ namespace CorsovaiBD
     {
 
         private readonly List<string> tableNames = new List<string>();
+
         public static string SelectedTableName;
         public static readonly MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder
         {
@@ -23,6 +25,9 @@ namespace CorsovaiBD
             Password = ConfigurationManager.AppSettings["Password"],
             Database = ConfigurationManager.AppSettings["Database"]
         };
+
+        private DataTable table;
+
         private MyTableDataSource dataSource;
 
         private void LoadTableNames()
@@ -50,8 +55,8 @@ namespace CorsovaiBD
             var ds = new DataSet();
             adapter.Fill(ds);
 
-            var table = ds.Tables[0];
-
+            table = ds.Tables[0];
+       
             while (TableView.TableColumns().Length > 0)
             {
                 TableView.RemoveColumn(TableView.TableColumns()[0]);
@@ -67,13 +72,16 @@ namespace CorsovaiBD
                     Identifier = column.ColumnName
                 };
                 TableView.AddColumn(tableColumn);
+
             }
 
             dataSource = new MyTableDataSource(table);
             TableView.DataSource = dataSource;
             TableView.ReloadData();
 
-           
+
+            MakeColumnNameList(table);
+
         }
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -117,9 +125,83 @@ namespace CorsovaiBD
 
         partial void ReloadButton(NSObject sender)
         {
+            ReLoadTable();
+        }
+
+        partial void Search(NSObject sender)
+        {
+            DataTable filtrTable;
+            string filtrValue;
+            string filtrColumnnName;
+            string filtr;
+            if (SearchCondition.StringValue == string.Empty) {
+
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = "Не введено условие для поиска",
+                    MessageText = "Ошибка"
+                };
+                alert.RunModal();
+            }
+            else
+            {
+                filtrValue = SearchCondition.StringValue;
+                if (SearchColumnsComboBox.SelectedIndex == -1)
+                {
+                    var alert = new NSAlert
+                    {
+                        AlertStyle = NSAlertStyle.Critical,
+                        InformativeText = "Не выбрано имя стобца для поиска",
+                        MessageText = "Ошибка"
+                    };
+                    alert.RunModal();
+                }
+                else
+                {
+                    filtrColumnnName = SearchColumnsComboBox.SelectedValue.ToString();
+                    filtr = filtrColumnnName + "='" + filtrValue + "'";
+
+                    DataRow[] HelpDataRows = table.Select(filtr);
+                    filtrTable = table.Clone();
+                    foreach(var row in HelpDataRows)
+                    {
+                        filtrTable.ImportRow(row);
+                    }
+                    TableView.DataSource = new MyTableDataSource(filtrTable);
+                    TableView.ReloadData();
+                }
+            }
+        }
+
+        partial void SearchReset(NSObject sender)
+        {
+            ReLoadTable();
+            SearchCondition.StringValue = string.Empty;
+            
+
+        }
+        public override void ViewDidLoad()
+        {
+            base.ViewDidLoad();
+            // Do any additional setup after loading the view.
+            LoadTableNames();
+
+            TableComboBox.UsesDataSource = true;
+            TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
+            TableComboBox.Activated += ShowSelectedTable;
+
+
+
+            TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
+            TableView.SizeToFit();
+        }
+        private void ReLoadTable()
+        {
             try
             {
                 SelectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
+                Console.WriteLine(SelectedTableName);
                 var query = $"SELECT * FROM {SelectedTableName}";
 
                 using var connection = new MySqlConnection(builder.ConnectionString);
@@ -129,10 +211,11 @@ namespace CorsovaiBD
                 var ds = new DataSet();
                 adapter.Fill(ds);
 
-                var table = ds.Tables[0];
+                table = ds.Tables[0];
                 dataSource = new MyTableDataSource(table);
                 TableView.DataSource = dataSource;
                 TableView.ReloadData();
+
             }
             catch (Exception ex)
             {
@@ -146,20 +229,18 @@ namespace CorsovaiBD
                 alert.RunModal();
             }
         }
-        public override void ViewDidLoad()
+        private void MakeColumnNameList(DataTable Helptable)
         {
-            base.ViewDidLoad();
-            // Do any additional setup after loading the view.
-            LoadTableNames();
 
-            TableComboBox.UsesDataSource = true;
-            TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
-            TableComboBox.Activated += ShowSelectedTable;
-
-            TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
-            TableView.SizeToFit();
+            SearchColumnsComboBox.RemoveAll();
+            
+            foreach (DataColumn HelpColumn in Helptable.Columns)
+            {
+                SearchColumnsComboBox.Add(new NSString(HelpColumn.ToString()));
+            }
+            SearchColumnsComboBox.StringValue = string.Empty;
+            SearchColumnsComboBox.ReloadData();
         }
-
     }
 
     

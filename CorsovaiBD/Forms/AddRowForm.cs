@@ -27,7 +27,7 @@ namespace CorsovaiBD
 
                 // Создаем и настраиваем элементы пользовательского интерфейса (метки, поля ввода, кнопку "Добавить")
                 var xPos = 20f;
-                var yPos = 500f;
+                var yPos = 600f;
                 var labelWidth = 100f;
                 var inputWidth = 250f;
                 var inputHeight = 22f;
