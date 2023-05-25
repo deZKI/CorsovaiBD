@@ -536,94 +536,15 @@
                             <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I6f-qh-Rje">
                                 <rect key="frame" x="823" y="368" width="153" height="23"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="49Z-a8-No3">
+                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="49Z-a8-No3">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <objectValues>
-                                        <string>Item 1</string>
-                                        <string>Item 2</string>
-                                        <string>Item 3</string>
-                                    </objectValues>
                                 </comboBoxCell>
+                                <connections>
+                                    <action selector="SelectSearchColumn:" target="XfG-lQ-9wD" id="Bcl-m3-67a"/>
+                                </connections>
                             </comboBox>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="N0R-Fn-Fvl">
-                                <rect key="frame" x="822" y="287" width="140" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="radio" title="По равенству" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" borderStyle="border" inset="2" id="Tsw-m5-uPs">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Check:" target="XfG-lQ-9wD" id="OAc-gH-Qs7"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="X5R-lh-IgK">
-                                <rect key="frame" x="822" y="261" width="140" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="radio" title="По вхождению" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="c6N-98-Rd4">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Check:" target="XfG-lQ-9wD" id="XMk-ma-lUD"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JoM-dT-9DS">
-                                <rect key="frame" x="821" y="235" width="141" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="radio" title="Начинается с" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="rYq-1X-I6e">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Check:" target="XfG-lQ-9wD" id="yjM-od-Vkh"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="V33-16-LYI">
-                                <rect key="frame" x="822" y="209" width="140" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="radio" title="Больше" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="rC2-69-Zub">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Check:" target="XfG-lQ-9wD" id="NDh-CB-tXy"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LR2-bd-eHV">
-                                <rect key="frame" x="822" y="183" width="140" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="radio" title="Больше равно" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="gYr-iy-piu">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Check:" target="XfG-lQ-9wD" id="deg-eq-0ry"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6K3-kF-gyf">
-                                <rect key="frame" x="822" y="157" width="140" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="radio" title="Меньше" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="eml-q1-Clm">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Check:" target="XfG-lQ-9wD" id="fZs-Ry-i63"/>
-                                </connections>
-                            </button>
-                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z9I-Mk-O9O">
-                                <rect key="frame" x="822" y="131" width="139" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="radio" title="Меньше равно" bezelStyle="regularSquare" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="Iwk-j1-kSm">
-                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                                <connections>
-                                    <action selector="Check:" target="XfG-lQ-9wD" id="gFb-6f-XdA"/>
-                                </connections>
-                            </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vKH-dS-v6S">
                                 <rect key="frame" x="274" y="23" width="129" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -635,21 +556,27 @@
                                     <action selector="ReloadButton:" target="XfG-lQ-9wD" id="Hrv-gd-p6S"/>
                                 </connections>
                             </button>
+                            <comboBox verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VVi-X6-idG">
+                                <rect key="frame" x="823" y="292" width="153" height="23"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="Тип поиска" drawsBackground="YES" completes="NO" numberOfVisibleItems="6" id="pnu-m6-czM">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </comboBoxCell>
+                                <connections>
+                                    <action selector="SelectSearchType:" target="XfG-lQ-9wD" id="1RJ-ae-chU"/>
+                                </connections>
+                            </comboBox>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="AddRow" destination="vYl-6T-Hu3" id="iLv-N7-pgt"/>
                         <outlet property="SearchColumnsComboBox" destination="I6f-qh-Rje" id="C6R-BT-RAV"/>
                         <outlet property="SearchCondition" destination="Thu-vr-vqt" id="VfA-Cl-5Qe"/>
+                        <outlet property="SearchTypeCombobox" destination="VVi-X6-idG" id="l5u-sO-WlX"/>
                         <outlet property="TableComboBox" destination="ofm-nP-wlz" id="SWI-iY-VeX"/>
                         <outlet property="TableView" destination="we0-RL-rR0" id="bUY-eq-X79"/>
-                        <outlet property="rbBegin" destination="JoM-dT-9DS" id="m6g-Gp-kcQ"/>
-                        <outlet property="rbContain" destination="X5R-lh-IgK" id="xH5-yd-xhD"/>
-                        <outlet property="rbEqual" destination="N0R-Fn-Fvl" id="7qT-SR-PRk"/>
-                        <outlet property="rbLess" destination="6K3-kF-gyf" id="u6Q-b5-ChT"/>
-                        <outlet property="rbLessEqual" destination="z9I-Mk-O9O" id="1rh-WS-NFh"/>
-                        <outlet property="rbMore" destination="V33-16-LYI" id="CL7-8B-EOU"/>
-                        <outlet property="rbMoreEqual" destination="LR2-bd-eHV" id="RfK-1z-pM4"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

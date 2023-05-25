@@ -16,31 +16,13 @@ namespace CorsovaiBD
 		AppKit.NSButton AddRow { get; set; }
 
 		[Outlet]
-		AppKit.NSButton rbBegin { get; set; }
-
-		[Outlet]
-		AppKit.NSButton rbContain { get; set; }
-
-		[Outlet]
-		AppKit.NSButton rbEqual { get; set; }
-
-		[Outlet]
-		AppKit.NSButton rbLess { get; set; }
-
-		[Outlet]
-		AppKit.NSButton rbLessEqual { get; set; }
-
-		[Outlet]
-		AppKit.NSButton rbMore { get; set; }
-
-		[Outlet]
-		AppKit.NSButton rbMoreEqual { get; set; }
-
-		[Outlet]
 		AppKit.NSComboBox SearchColumnsComboBox { get; set; }
 
 		[Outlet]
 		AppKit.NSTextField SearchCondition { get; set; }
+
+		[Outlet]
+		AppKit.NSComboBox SearchTypeCombobox { get; set; }
 
 		[Outlet]
 		AppKit.NSComboBox TableComboBox { get; set; }
@@ -62,47 +44,26 @@ namespace CorsovaiBD
 
 		[Action ("SearchReset:")]
 		partial void SearchReset (Foundation.NSObject sender);
+
+		[Action ("SelectSeacrColumn:")]
+		partial void SelectSeacrColumn (Foundation.NSObject sender);
+
+		[Action ("SelectSearchColumn:")]
+		partial void SelectSearchColumn (Foundation.NSObject sender);
+
+		[Action ("SelectSearchType:")]
+		partial void SelectSearchType (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (SearchTypeCombobox != null) {
+				SearchTypeCombobox.Dispose ();
+				SearchTypeCombobox = null;
+			}
+
 			if (AddRow != null) {
 				AddRow.Dispose ();
 				AddRow = null;
-			}
-
-			if (rbBegin != null) {
-				rbBegin.Dispose ();
-				rbBegin = null;
-			}
-
-			if (rbContain != null) {
-				rbContain.Dispose ();
-				rbContain = null;
-			}
-
-			if (rbEqual != null) {
-				rbEqual.Dispose ();
-				rbEqual = null;
-			}
-
-			if (rbLess != null) {
-				rbLess.Dispose ();
-				rbLess = null;
-			}
-
-			if (rbLessEqual != null) {
-				rbLessEqual.Dispose ();
-				rbLessEqual = null;
-			}
-
-			if (rbMore != null) {
-				rbMore.Dispose ();
-				rbMore = null;
-			}
-
-			if (rbMoreEqual != null) {
-				rbMoreEqual.Dispose ();
-				rbMoreEqual = null;
 			}
 
 			if (SearchColumnsComboBox != null) {

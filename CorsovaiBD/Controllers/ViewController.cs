@@ -28,8 +28,9 @@ namespace CorsovaiBD
         };
 
         private DataTable table;
-
         private MyTableDataSource dataSource;
+        private string selectedColumnType;
+
 
         private void LoadTableNames()
         {
@@ -83,6 +84,9 @@ namespace CorsovaiBD
 
             MakeColumnNameList(table);
 
+            SearchTypeCombobox.RemoveAll();
+            SearchTypeCombobox.StringValue = string.Empty;
+
         }
         public ViewController(IntPtr handle) : base(handle)
         {
@@ -127,14 +131,14 @@ namespace CorsovaiBD
         partial void ReloadButton(NSObject sender)
         {
             ReLoadTable();
+            
+            
         }
 
         partial void Search(NSObject sender)
         {
             DataTable filtrTable;
-            string filtrValue;
-            string filtrColumnnName;
-            string filtr;
+       
             if (SearchCondition.StringValue == string.Empty) {
 
                 var alert = new NSAlert
@@ -147,7 +151,7 @@ namespace CorsovaiBD
             }
             else
             {
-                filtrValue = SearchCondition.StringValue;
+     
                 if (SearchColumnsComboBox.SelectedIndex == -1)
                 {
                     var alert = new NSAlert
@@ -160,17 +164,79 @@ namespace CorsovaiBD
                 }
                 else
                 {
-                    filtrColumnnName = SearchColumnsComboBox.SelectedValue.ToString();
-                    filtr = filtrColumnnName + "='" + filtrValue + "'";
-
-                    DataRow[] HelpDataRows = table.Select(filtr);
-                    filtrTable = table.Clone();
-                    foreach(var row in HelpDataRows)
+                    string filtrColumnName = SearchColumnsComboBox.SelectedValue.ToString();
+                    string filtrValue = SearchCondition.StringValue;
+                    string type = SearchTypeCombobox.SelectedValue.ToString();
+                    string filtr = "";
+                    if (selectedColumnType == "System.DateTime")
                     {
-                        filtrTable.ImportRow(row);
+                        DateTime result_date;
+                        bool success_data = DateTime.TryParse(filtrValue, out result_date);
+                        if (!success_data)
+                        {
+                            var alert = new NSAlert
+                            {
+                                AlertStyle = NSAlertStyle.Critical,
+                                InformativeText = "Ввели не дату, а колонка с датой",
+                                MessageText = "Ошибка"
+                            };
+                            alert.RunModal();
+                        }
+                        return;
                     }
-                    TableView.DataSource = new MyTableDataSource(filtrTable);
-                    TableView.ReloadData();
+                    
+                    switch (type)
+                    {
+                        case "По равенству":
+                            filtr = filtrColumnName + "= '" + filtrValue + "'";
+                            break;
+                        case "По вхождению":
+                            filtr = filtrColumnName + " LIKE '%" + filtrValue + "%'";
+                            break;
+
+                        case "Начинается с":
+                            filtr = filtrColumnName + " LIKE '" + filtrValue + "%'";
+                            break;
+
+                        case "Больше":
+                            filtr = filtrColumnName + " > '" + filtrValue + "'";
+                            break;
+
+                        case "Больше равно":
+                            filtr = filtrColumnName + " >= '" + filtrValue + "'";
+                            break;
+
+                        case "Меньше":
+                            filtr = filtrColumnName + " < '" + filtrValue + "'";
+                            break;
+
+                        case "Меньше равно":
+                            filtr = filtrColumnName + " <= '" + filtrValue + "'";
+                            break;
+
+                    }
+                    try
+                    {
+                        DataRow[] HelpDataRows = table.Select(filtr);
+                        filtrTable = table.Clone();
+                        foreach (var row in HelpDataRows)
+                        {
+                            filtrTable.ImportRow(row);
+                        }
+                        TableView.DataSource = new MyTableDataSource(filtrTable);
+                        TableView.ReloadData();
+                    }
+                    catch (Exception ex)
+                    {
+                        var alert = new NSAlert
+                        {
+                            AlertStyle = NSAlertStyle.Critical,
+                            InformativeText = ex.Message,
+                            MessageText = "Ошибка"
+                        };
+                        alert.RunModal();
+                    }
+
                 }
             }
         }
@@ -182,16 +248,7 @@ namespace CorsovaiBD
             
 
         }
-        partial void Check(NSObject sender)
-        {
-            if (sender is NSButton button)
-            {
-                Console.OutputEncoding = Encoding.UTF8;
-                string buttonTitle = button.Title.ToString();
-                Console.WriteLine(buttonTitle);
-                // дальнейшая обработка значения кнопки
-            }
-        }
+       
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
@@ -202,7 +259,7 @@ namespace CorsovaiBD
             TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
             TableComboBox.Activated += ShowSelectedTable;
 
-
+           
 
             TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
             TableView.SizeToFit();
@@ -252,7 +309,37 @@ namespace CorsovaiBD
             SearchColumnsComboBox.StringValue = string.Empty;
             SearchColumnsComboBox.ReloadData();
         }
+
+        partial void SelectSearchColumn(NSObject sender)
+        {
+
+            selectedColumnType = table.Columns[((int)SearchColumnsComboBox.SelectedIndex)].DataType.ToString();
+            SearchTypeCombobox.RemoveAll();
+            SearchTypeCombobox.StringValue = string.Empty;
+
+            SearchTypeCombobox.Add(new NSString("По равенству"));
+            switch (selectedColumnType)
+            {
+                case "System.Int32":
+                    SearchTypeCombobox.Add(new NSString("Больше"));
+                    SearchTypeCombobox.Add(new NSString("Меньше"));
+                    SearchTypeCombobox.Add(new NSString("Больше равно"));
+                    SearchTypeCombobox.Add(new NSString("Меньше равно"));
+                    break;
+
+
+                case "System.String" or "System.DateTime":
+                    SearchTypeCombobox.Add(new NSString("По вхождению"));
+                    SearchTypeCombobox.Add(new NSString("Начинается с"));
+                    break;
+            }
+
+            SearchTypeCombobox.SelectItem(0);
+            SearchColumnsComboBox.ReloadData();
+
+           
+        }
     }
 
-    
+        
 }
