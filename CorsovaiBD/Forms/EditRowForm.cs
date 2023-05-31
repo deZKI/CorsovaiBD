@@ -1,27 +1,27 @@
 using System;
-using Foundation;
-using AppKit;
-using CorsovaiBD.Models;
-using CoreGraphics;
-using MySqlConnector;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Reflection.Emit;
+using AppKit;
+using CoreGraphics;
+using CorsovaiBD.Models;
+using Foundation;
+using MySqlConnector;
 
 namespace CorsovaiBD
 {
-    public partial class AddRowForm : NSViewController
-    {
-        public AddRowForm(IntPtr handle) : base(handle)
-        {
-        }
-
+    public partial class EditRowForm : NSViewController
+	{
+		public EditRowForm (IntPtr handle) : base (handle)
+		{
+           
+		}
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
+    
+            //var d = a.getSelectedRow;
             try
             {
 
@@ -43,13 +43,15 @@ namespace CorsovaiBD
                 var table = ds.Tables[0];
                 var columns = table.Columns;
 
+                columns.Remove("id");
+
                 // Получаем список внешних ключей для выбранной таблицы
                 var foreignKeys = GetForeignKeys(connection, ViewController.SelectedTableName);
 
                 foreach (DataColumn column in columns)
                 {
                     var columnName = (string)column.ColumnName;
-                  
+                   
                     var label = new NSTextField(new CGRect(xPos, yPos, labelWidth, inputHeight))
                     {
                         StringValue = columnName,
@@ -66,6 +68,7 @@ namespace CorsovaiBD
                         var comboBox = new NSComboBox(new CGRect(xPos + labelWidth + margin, yPos, 300, inputHeight));
                         comboBox.Identifier = new NSString(columnName);
                         comboBox.Editable = false;
+                        
 
                         var foreignKey = foreignKeys.First(fk => fk.ColumnName == columnName);
                         var referencedTable = foreignKey.ReferencedTableName;
@@ -83,6 +86,7 @@ namespace CorsovaiBD
 
                         View.AddSubview(comboBox);
                     }
+                   
                     else
                     {
                         // Создаем текстовое поле для обычного столбца
@@ -98,14 +102,14 @@ namespace CorsovaiBD
                 }
 
 
-                var addButton = new NSButton(new CGRect(450, 500f, 100f, inputHeight))
+                var editButton = new NSButton(new CGRect(450, 500f, 100f, inputHeight))
                 {
-                    Title = "Добавить",
+                    Title = "Изменить",
                     BezelStyle = NSBezelStyle.Rounded
                 };
-                addButton.Activated += AddRow;
-                View.AddSubview(addButton);
-                
+                editButton.Activated += EditRow;
+                View.AddSubview(editButton);
+
             }
             catch (Exception ex)
             {
@@ -121,7 +125,7 @@ namespace CorsovaiBD
         }
 
 
-        private void AddRow(object sender, EventArgs e)
+        private void EditRow(object sender, EventArgs e)
         {
             try
             {
@@ -129,51 +133,36 @@ namespace CorsovaiBD
                 {
                     connection.Open();
 
-                    var dataTable = new DataTable(ViewController.SelectedTableName);
-
-                    // Заполняем столбцы DataTable на основе NSTextField'ов
-                    foreach (var subview in View.Subviews)
-                    {
-                        if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
-                        {
-                            var columnName = input.Identifier.ToString();
-                            dataTable.Columns.Add(columnName);
-                        }
-                    }
-
-                    // Создаем новую строку и заполняем ее значениями из NSTextField'ов
-                    var row = dataTable.NewRow();
-                    foreach (var subview in View.Subviews)
-                    {
-                        if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
-                        {
-                            var columnName = input.Identifier.ToString();
-                            Console.WriteLine(input.StringValue.Split(" ")[0]);
-                            row[columnName] = input.StringValue.Split(" ")[0];
-                        }
-                    }
-
-                    // Добавляем новую строку в таблицу
-                    dataTable.Rows.Add(row);
-
                     var adapter = new MySqlDataAdapter($"SELECT * FROM {ViewController.SelectedTableName}", connection);
+                    var ds = new DataSet();
+                    adapter.Fill(ds);
+                    var dataTable = ds.Tables[0];
+                    // Fill the columns of the DataTable based on NSTextField'
 
+                    // Create a new row and populate it with values from NSTextField's
+
+                    foreach (var subview in View.Subviews)
+                    {
+                        if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
+                        {
+                            var columnName = input.Identifier.ToString();
+                            dataTable.Rows[ViewController.selectedRowIndex][columnName] = input.StringValue.Split(" ")[0];
+                        }
+                    }
+                   
                     // Создаем объект MySqlCommandBuilder на основе адаптера, чтобы автоматически генерировать InsertCommand
                     var builder = new MySqlCommandBuilder(adapter);
-
-
-
+                    
                     // Добавляем новую строку в таблицу
                     adapter.Update(dataTable);
-
+                   
                     // Закрываем форму добавления новой строки
                     DismissViewController(this);
-                   
                 }
             }
             catch (Exception ex)
             {
-                // Отображаем окно с ошибкой
+                // Display an error window
                 var alert = new NSAlert
                 {
                     AlertStyle = NSAlertStyle.Critical,
@@ -184,7 +173,8 @@ namespace CorsovaiBD
             }
         }
 
-       
+
+
 
         public static List<ForeignKeyColumn> GetForeignKeys(MySqlConnection connection, string tableName)
         {
@@ -220,3 +210,4 @@ namespace CorsovaiBD
 
     }
 }
+

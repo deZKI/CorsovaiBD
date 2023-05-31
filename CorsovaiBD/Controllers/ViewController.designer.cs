@@ -56,11 +56,6 @@ namespace CorsovaiBD
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (SearchTypeCombobox != null) {
-				SearchTypeCombobox.Dispose ();
-				SearchTypeCombobox = null;
-			}
-
 			if (AddRow != null) {
 				AddRow.Dispose ();
 				AddRow = null;
@@ -74,6 +69,11 @@ namespace CorsovaiBD
 			if (SearchCondition != null) {
 				SearchCondition.Dispose ();
 				SearchCondition = null;
+			}
+
+			if (SearchTypeCombobox != null) {
+				SearchTypeCombobox.Dispose ();
+				SearchTypeCombobox = null;
 			}
 
 			if (TableComboBox != null) {

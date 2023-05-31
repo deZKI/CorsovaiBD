@@ -26,7 +26,7 @@ namespace CorsovaiBD
             Password = ConfigurationManager.AppSettings["Password"],
             Database = ConfigurationManager.AppSettings["Database"]
         };
-
+        public static int selectedRowIndex;
         private DataTable table;
         private MyTableDataSource dataSource;
         private string selectedColumnType;
@@ -128,11 +128,12 @@ namespace CorsovaiBD
             }
         }
 
+      
+          
+
         partial void ReloadButton(NSObject sender)
         {
-            ReLoadTable();
-            
-            
+            ReLoadTable();            
         }
 
         partial void Search(NSObject sender)
@@ -167,6 +168,7 @@ namespace CorsovaiBD
                     string filtrColumnName = SearchColumnsComboBox.SelectedValue.ToString();
                     string filtrValue = SearchCondition.StringValue;
                     string type = SearchTypeCombobox.SelectedValue.ToString();
+                    SelectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
                     string filtr = "";
                     if (selectedColumnType == "System.DateTime")
                     {
@@ -187,44 +189,76 @@ namespace CorsovaiBD
                     
                     switch (type)
                     {
+                     
+
                         case "По равенству":
-                            filtr = filtrColumnName + "= '" + filtrValue + "'";
+                            filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + " = @FiltrValue";
                             break;
                         case "По вхождению":
-                            filtr = filtrColumnName + " LIKE '%" + filtrValue + "%'";
+                            filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + " LIKE '%" + filtrValue + "%'";
                             break;
-
                         case "Начинается с":
-                            filtr = filtrColumnName + " LIKE '" + filtrValue + "%'";
+                            filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + " LIKE '" + filtrValue + "%'";
                             break;
-
                         case "Больше":
-                            filtr = filtrColumnName + " > '" + filtrValue + "'";
+                            filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + " > " + "@FiltrValue";
                             break;
-
                         case "Больше равно":
-                            filtr = filtrColumnName + " >= '" + filtrValue + "'";
+                            filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + " >= @FiltrValue";
                             break;
-
                         case "Меньше":
-                            filtr = filtrColumnName + " < '" + filtrValue + "'";
+                            filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + "<" + "@FiltrValue";
                             break;
-
                         case "Меньше равно":
-                            filtr = filtrColumnName + " <= '" + filtrValue + "'";
+                            filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + "<= @FiltrValue";
                             break;
-
                     }
                     try
-                    {
-                        DataRow[] HelpDataRows = table.Select(filtr);
-                        filtrTable = table.Clone();
-                        foreach (var row in HelpDataRows)
+                    { 
+
+                        using var connection = new MySqlConnection(builder.ConnectionString);
+                        connection.Open();
+
+                        var command = new MySqlCommand(filtr, connection);
+                        command.Parameters.AddWithValue("@FiltrValue", filtrValue);
+                        var reader = command.ExecuteReader();
+
+                        while (TableView.TableColumns().Length > 0)
                         {
-                            filtrTable.ImportRow(row);
+                            TableView.RemoveColumn(TableView.TableColumns()[0]);
                         }
-                        TableView.DataSource = new MyTableDataSource(filtrTable);
+                        var dataRows = new DataTable();
+
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            var columnName = reader.GetName(i);
+                            var columnType = reader.GetFieldType(i);
+                            dataRows.Columns.Add(new DataColumn(columnName, columnType));
+
+                            var columnId = new NSString(columnName);
+                            var tableColumn = new NSTableColumn(columnId)
+                            {
+                                HeaderCell = new NSTableHeaderCell { Title = columnName },
+                                Identifier = columnName
+                            };
+                            TableView.AddColumn(tableColumn);
+                        }
+
+
+                        while (reader.Read())
+                        {
+                            var row = dataRows.NewRow();
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                row[i] = reader.GetValue(i);
+                            }
+                            dataRows.Rows.Add(row);
+                        }
+
+                        dataSource = new MyTableDataSource(dataRows);
+                        TableView.DataSource = dataSource;
                         TableView.ReloadData();
+
                     }
                     catch (Exception ex)
                     {
@@ -259,10 +293,15 @@ namespace CorsovaiBD
             TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
             TableComboBox.Activated += ShowSelectedTable;
 
+            TableView.Activated += getSelectedRow;
            
 
             TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
             TableView.SizeToFit();
+        }
+        private void getSelectedRow(object sender, EventArgs e)
+        {
+            selectedRowIndex = (int)TableView.SelectedRow;
         }
         private void ReLoadTable()
         {

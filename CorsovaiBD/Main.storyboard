@@ -568,6 +568,17 @@
                                     <action selector="SelectSearchType:" target="XfG-lQ-9wD" id="1RJ-ae-chU"/>
                                 </connections>
                             </comboBox>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HlA-dG-qpr">
+                                <rect key="frame" x="401" y="23" width="129" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Редактировать" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="gKI-z9-PB4">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <segue destination="kWd-FD-uqw" kind="modal" id="Iul-i9-lQE"/>
+                                </connections>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -594,7 +605,20 @@
                     </view>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="179.5" y="1601.5"/>
+            <point key="canvasLocation" x="-574" y="1613"/>
+        </scene>
+        <!--Изменить Строку-->
+        <scene sceneID="Joj-z4-bLy">
+            <objects>
+                <customObject id="9NE-RQ-ERn" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <viewController title="Изменить Строку" id="kWd-FD-uqw" customClass="EditRowForm" sceneMemberID="viewController">
+                    <view key="view" id="SM7-lv-nY8">
+                        <rect key="frame" x="0.0" y="0.0" width="1091" height="651"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="574" y="1613"/>
         </scene>
     </scenes>
 </document>
