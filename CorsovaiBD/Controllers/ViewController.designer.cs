@@ -16,6 +16,9 @@ namespace CorsovaiBD
 		AppKit.NSButton AddRow { get; set; }
 
 		[Outlet]
+		AppKit.NSButton RedactButton { get; set; }
+
+		[Outlet]
 		AppKit.NSComboBox SearchColumnsComboBox { get; set; }
 
 		[Outlet]
@@ -56,6 +59,11 @@ namespace CorsovaiBD
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (RedactButton != null) {
+				RedactButton.Dispose ();
+				RedactButton = null;
+			}
+
 			if (AddRow != null) {
 				AddRow.Dispose ();
 				AddRow = null;

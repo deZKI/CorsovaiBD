@@ -27,10 +27,15 @@ namespace CorsovaiBD
             Database = ConfigurationManager.AppSettings["Database"]
         };
         public static int selectedRowIndex;
+        public static int selectedRowId;
         private DataTable table;
         private MyTableDataSource dataSource;
         private string selectedColumnType;
 
+        public static void selectTable()
+        {
+
+        }
 
         private void LoadTableNames()
         {
@@ -43,11 +48,25 @@ namespace CorsovaiBD
                 string tableName = reader.GetString(0);
                 tableNames.Add(tableName);
             }
-         
+
         }
         private void ShowSelectedTable(object sender, EventArgs e)
         {
-            SelectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
+            try
+            {
+                RedactButton.Enabled = false;
+                SelectedTableName = tableNames[(int)TableComboBox.SelectedIndex];
+            }
+            catch (Exception ex)
+            {
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = "Выберите таблицу из списка",
+                    MessageText = "Ошибка"
+                };
+                alert.RunModal();
+            }
             var query = $"SELECT * FROM {SelectedTableName}";
 
             using var connection = new MySqlConnection(builder.ConnectionString);
@@ -58,7 +77,7 @@ namespace CorsovaiBD
             adapter.Fill(ds);
 
             table = ds.Tables[0];
-       
+
             while (TableView.TableColumns().Length > 0)
             {
                 TableView.RemoveColumn(TableView.TableColumns()[0]);
@@ -94,25 +113,26 @@ namespace CorsovaiBD
 
         partial void DeleteRowButton(NSObject sender)
         {
-            try { 
-            var selectedRow = TableView.SelectedRow;
-            var query = $"SELECT * FROM {SelectedTableName}";
+            try
+            {
+                var selectedRow = TableView.SelectedRow;
+                var query = $"SELECT * FROM {SelectedTableName}";
 
-            using var connection = new MySqlConnection(builder.ConnectionString);
-            connection.Open();
+                using var connection = new MySqlConnection(builder.ConnectionString);
+                connection.Open();
 
-            var adapter = new MySqlDataAdapter(query, connection);
-            var ds = new DataSet();
-            adapter.Fill(ds);
-            var table = ds.Tables[0];
+                var adapter = new MySqlDataAdapter(query, connection);
+                var ds = new DataSet();
+                adapter.Fill(ds);
+                var table = ds.Tables[0];
 
-            var builderr = new MySqlCommandBuilder(adapter);
-            ds.Tables[0].Rows[((int)selectedRow)].Delete();
-            adapter.Update(ds.Tables[0]);
-            ds.Tables[0].AcceptChanges();
-            dataSource = new MyTableDataSource(table);
-            TableView.DataSource = dataSource;
-            TableView.ReloadData();
+                var builderr = new MySqlCommandBuilder(adapter);
+                ds.Tables[0].Rows[((int)selectedRow)].Delete();
+                adapter.Update(ds.Tables[0]);
+                ds.Tables[0].AcceptChanges();
+                dataSource = new MyTableDataSource(table);
+                TableView.DataSource = dataSource;
+                TableView.ReloadData();
 
             }
             catch (Exception ex)
@@ -128,19 +148,20 @@ namespace CorsovaiBD
             }
         }
 
-      
-          
+
+
 
         partial void ReloadButton(NSObject sender)
         {
-            ReLoadTable();            
+            ReLoadTable();
         }
 
         partial void Search(NSObject sender)
         {
             DataTable filtrTable;
-       
-            if (SearchCondition.StringValue == string.Empty) {
+
+            if (SearchCondition.StringValue == string.Empty)
+            {
 
                 var alert = new NSAlert
                 {
@@ -152,7 +173,7 @@ namespace CorsovaiBD
             }
             else
             {
-     
+
                 if (SearchColumnsComboBox.SelectedIndex == -1)
                 {
                     var alert = new NSAlert
@@ -186,10 +207,10 @@ namespace CorsovaiBD
                         }
                         return;
                     }
-                    
+
                     switch (type)
                     {
-                     
+
 
                         case "По равенству":
                             filtr = "select * from " + SelectedTableName + " where " + filtrColumnName + " = @FiltrValue";
@@ -214,7 +235,7 @@ namespace CorsovaiBD
                             break;
                     }
                     try
-                    { 
+                    {
 
                         using var connection = new MySqlConnection(builder.ConnectionString);
                         connection.Open();
@@ -279,10 +300,10 @@ namespace CorsovaiBD
         {
             ReLoadTable();
             SearchCondition.StringValue = string.Empty;
-            
+
 
         }
-       
+
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
@@ -292,16 +313,26 @@ namespace CorsovaiBD
             TableComboBox.UsesDataSource = true;
             TableComboBox.DataSource = new ComboBoxDataSource(tableNames, TableComboBox);
             TableComboBox.Activated += ShowSelectedTable;
+            RedactButton.Enabled = false;
 
-            TableView.Activated += getSelectedRow;
-           
 
             TableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
             TableView.SizeToFit();
+            TableView.Activated += getSelectedRow;
         }
         private void getSelectedRow(object sender, EventArgs e)
         {
-            selectedRowIndex = (int)TableView.SelectedRow;
+            try
+            {
+                selectedRowIndex = (int)TableView.SelectedRow;
+                selectedRowId = (int)table.Rows[selectedRowIndex]["id"];
+                RedactButton.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
         }
         private void ReLoadTable()
         {
@@ -340,7 +371,7 @@ namespace CorsovaiBD
         {
 
             SearchColumnsComboBox.RemoveAll();
-            
+
             foreach (DataColumn HelpColumn in Helptable.Columns)
             {
                 SearchColumnsComboBox.Add(new NSString(HelpColumn.ToString()));
@@ -376,9 +407,9 @@ namespace CorsovaiBD
             SearchTypeCombobox.SelectItem(0);
             SearchColumnsComboBox.ReloadData();
 
-           
+
         }
     }
 
-        
+
 }

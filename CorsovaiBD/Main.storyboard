@@ -583,6 +583,7 @@
                     </view>
                     <connections>
                         <outlet property="AddRow" destination="vYl-6T-Hu3" id="iLv-N7-pgt"/>
+                        <outlet property="RedactButton" destination="HlA-dG-qpr" id="JII-cu-8ci"/>
                         <outlet property="SearchColumnsComboBox" destination="I6f-qh-Rje" id="C6R-BT-RAV"/>
                         <outlet property="SearchCondition" destination="Thu-vr-vqt" id="VfA-Cl-5Qe"/>
                         <outlet property="SearchTypeCombobox" destination="VVi-X6-idG" id="l5u-sO-WlX"/>
