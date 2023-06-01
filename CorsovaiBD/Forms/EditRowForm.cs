@@ -17,6 +17,7 @@ namespace CorsovaiBD
 		{
            
 		}
+        private int columnCount;
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
@@ -24,7 +25,6 @@ namespace CorsovaiBD
             //var d = a.getSelectedRow;
             try
             {
-
                 // Создаем и настраиваем элементы пользовательского интерфейса (метки, поля ввода, кнопку "Добавить")
                 var xPos = 20f;
                 var yPos = 600f;
@@ -44,7 +44,7 @@ namespace CorsovaiBD
                 var columns = table.Columns;
 
                 columns.Remove("id");
-
+                columnCount = columns.Count;
                 // Получаем список внешних ключей для выбранной таблицы
                 var foreignKeys = GetForeignKeys(connection, ViewController.SelectedTableName);
 
@@ -140,16 +140,31 @@ namespace CorsovaiBD
                     // Fill the columns of the DataTable based on NSTextField'
 
                     // Create a new row and populate it with values from NSTextField's
-
+                    int countEmptyRow = 0;
                     foreach (var subview in View.Subviews)
                     {
                         if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
                         {
                             var columnName = input.Identifier.ToString();
+                            var columnValue = input.StringValue;
+                            if (columnValue == "")
+                            {
+                                countEmptyRow += 1;
+                            }
                             dataTable.Rows[ViewController.selectedRowIndex][columnName] = input.StringValue.Split(" ")[0];
                         }
                     }
-                   
+
+                    if (countEmptyRow == columnCount)
+                    {
+                        var alert = new NSAlert
+                        {
+                            AlertStyle = NSAlertStyle.Critical,
+                            InformativeText = "Пустая строка",
+                            MessageText = "Ошибка"
+                        };
+                        alert.RunModal();
+                    }
                     // Создаем объект MySqlCommandBuilder на основе адаптера, чтобы автоматически генерировать InsertCommand
                     var builder = new MySqlCommandBuilder(adapter);
                     
