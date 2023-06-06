@@ -120,6 +120,7 @@
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Forms\" />
+    <Folder Include="Forms\AuthRegistation\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -144,6 +145,14 @@
     <Compile Include="Forms\EditRowForm.cs" />
     <Compile Include="Forms\EditRowForm.designer.cs">
       <DependentUpon>EditRowForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AuthRegistation\LoginForm.cs" />
+    <Compile Include="Forms\AuthRegistation\LoginForm.designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AuthRegistation\RegistrationForm.cs" />
+    <Compile Include="Forms\AuthRegistation\RegistrationForm.designer.cs">
+      <DependentUpon>RegistrationForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

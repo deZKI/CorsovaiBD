@@ -26,6 +26,26 @@ namespace CorsovaiBD
             Password = ConfigurationManager.AppSettings["Password"],
             Database = ConfigurationManager.AppSettings["Database"]
         };
+
+        public override void PrepareForSegue(NSStoryboardSegue segue, NSObject sender)
+        {
+            base.PrepareForSegue(segue, sender);
+
+            //// Take action based on the segue name
+            //switch (segue.Identifier)
+            //{
+            //    case "ModalSegue":
+            //        var dialog = segue.DestinationController as CustomDialogController;
+            //        dialog.DialogTitle = "MacDialog";
+            //        dialog.DialogDescription = "This is a sample dialog.";
+            //        dialog.DialogAccepted += (s, e) => {
+            //            Console.WriteLine("Dialog accepted");
+            //            DismissViewController(dialog);
+            //        };
+            //        dialog.Presentor = this;
+            //        break;
+            //}
+        }
         public static int selectedRowIndex;
         public static int selectedRowId;
         private DataTable table;
@@ -158,7 +178,6 @@ namespace CorsovaiBD
 
         partial void Search(NSObject sender)
         {
-            DataTable filtrTable;
 
             if (SearchCondition.StringValue == string.Empty)
             {
