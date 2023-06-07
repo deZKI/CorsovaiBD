@@ -131,10 +131,6 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="Controllers\ViewController.cs" />
-    <Compile Include="Controllers\ViewController.designer.cs">
-      <DependentUpon>ViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="Models\MyTableDataSource.cs" />
     <Compile Include="Models\ComboBoxDataSource.cs" />
     <Compile Include="Forms\AddRowForm.cs" />
@@ -146,13 +142,22 @@
     <Compile Include="Forms\EditRowForm.designer.cs">
       <DependentUpon>EditRowForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\AuthRegistation\RegistrationForm.cs" />
+    <Compile Include="Forms\AuthRegistation\RegistrationForm.designer.cs">
+      <DependentUpon>RegistrationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AuthRegistation\LoginForm.cs" />
     <Compile Include="Forms\AuthRegistation\LoginForm.designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AuthRegistation\RegistrationForm.cs" />
-    <Compile Include="Forms\AuthRegistation\RegistrationForm.designer.cs">
-      <DependentUpon>RegistrationForm.cs</DependentUpon>
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Controllers\MainController.cs" />
+    <Compile Include="Controllers\MainController.designer.cs">
+      <DependentUpon>MainController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controllers\PhotoViewController.cs" />
+    <Compile Include="Controllers\PhotoViewController.designer.cs">
+      <DependentUpon>PhotoViewController.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

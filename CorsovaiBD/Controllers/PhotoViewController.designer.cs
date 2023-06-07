@@ -9,8 +9,8 @@ using System.CodeDom.Compiler;
 
 namespace CorsovaiBD
 {
-	[Register ("RegistationForm")]
-	partial class RegistationForm
+	[Register ("PhotoViewController")]
+	partial class PhotoViewController
 	{
 		
 		void ReleaseDesignerOutlets ()

@@ -15,8 +15,7 @@ namespace CorsovaiBD
 	{
 		public EditRowForm (IntPtr handle) : base (handle)
 		{
-           
-		}
+        }
         private int columnCount;
         public override void ViewDidLoad()
         {
@@ -33,9 +32,9 @@ namespace CorsovaiBD
                 var inputHeight = 22f;
                 var margin = 30f;
 
-                using var connection = new MySqlConnection(ViewController.builder.ConnectionString);
+                using var connection = new MySqlConnection(MainController.builder.ConnectionString);
                 connection.Open();
-                var query = $"SELECT * FROM {ViewController.SelectedTableName}";
+                var query = $"SELECT * FROM {MainController.selectedTableName}";
                 var adapter = new MySqlDataAdapter(query, connection);
                 var ds = new DataSet();
                 adapter.Fill(ds);
@@ -46,7 +45,7 @@ namespace CorsovaiBD
                 columns.Remove("id");
                 columnCount = columns.Count;
                 // Получаем список внешних ключей для выбранной таблицы
-                var foreignKeys = GetForeignKeys(connection, ViewController.SelectedTableName);
+                var foreignKeys = GetForeignKeys(connection, MainController.selectedTableName);
 
                 foreach (DataColumn column in columns)
                 {
@@ -62,7 +61,18 @@ namespace CorsovaiBD
                     };
                     View.AddSubview(label);
 
-                    if (foreignKeys.Any(fk => fk.ColumnName == columnName))
+                    if (columnName == "Photo") // Check if the column is the photo column
+                    {
+                        // Create an NSImageView for displaying the photo
+                        var imageView = new NSImageView(new CGRect(xPos + labelWidth + margin, yPos, inputWidth, inputHeight))
+                        {
+                            Image = NSImage.ImageNamed(NSImageName.UserGuest), // Placeholder image
+                            Editable = true
+                        };
+
+                        View.AddSubview(imageView);
+                    }
+                    else if (foreignKeys.Any(fk => fk.ColumnName == columnName))
                     {
                         // Создаем комбобокс для внешнего ключа и заполняем его значениями из связанной таблицы
                         var comboBox = new NSComboBox(new CGRect(xPos + labelWidth + margin, yPos, 300, inputHeight));
@@ -129,11 +139,11 @@ namespace CorsovaiBD
         {
             try
             {
-                using (var connection = new MySqlConnection(ViewController.builder.ConnectionString))
+                using (var connection = new MySqlConnection(MainController.builder.ConnectionString))
                 {
                     connection.Open();
 
-                    var adapter = new MySqlDataAdapter($"SELECT * FROM {ViewController.SelectedTableName}", connection);
+                    var adapter = new MySqlDataAdapter($"SELECT * FROM {MainController.selectedTableName}", connection);
                     var ds = new DataSet();
                     adapter.Fill(ds);
                     var dataTable = ds.Tables[0];
@@ -151,7 +161,7 @@ namespace CorsovaiBD
                             {
                                 countEmptyRow += 1;
                             }
-                            dataTable.Rows[ViewController.selectedRowIndex][columnName] = input.StringValue.Split(" ")[0];
+                            dataTable.Rows[MainController.selectedRowIndex][columnName] = input.StringValue.Split(" ")[0];
                         }
                     }
 

@@ -4,13 +4,122 @@ using System;
 
 using Foundation;
 using AppKit;
+using CorsovaiBD.Models;
+using MySqlConnector;
 
 namespace CorsovaiBD
 {
-	public partial class RegistrationForm : NSViewController
-	{
-		public RegistrationForm (IntPtr handle) : base (handle)
-		{
-		}
-	}
+    public partial class RegistrationForm : NSViewController
+    {
+        public RegistrationForm(IntPtr handle) : base(handle)
+        {
+        }
+
+        partial void loginFormButton(NSObject sender)
+        {
+            var viewController = this.Storyboard.InstantiateControllerWithIdentifier("LoginForm") as NSViewController;
+            if (viewController != null)
+            {
+                PresentViewControllerAsModalWindow(viewController);
+                this.View.Window.Close();
+                // Close the current window
+            }
+        }
+        partial void exitButton(NSObject sender)
+        {
+            this.View.Window.Close();
+        }
+
+        private bool areInputsIncorrect(string username, string password, string repeatPassword)
+        {
+            if (username == "" && password == "")
+            {
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = "Username and Password must be set",
+                    MessageText = "Username and Password are none"
+                };
+                alert.RunModal();
+                return true;
+            }
+            if (username == "")
+            {
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = "Username must be set",
+                    MessageText = "Login Failed"
+                };
+                alert.RunModal();
+                return true;
+            }
+            if (password == "")
+            {
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = "Password must be set",
+                    MessageText = "Login Failed"
+                };
+                alert.RunModal();
+                return true;
+            }
+            if (password != repeatPassword)
+            {
+                var alert = new NSAlert
+                {
+                    AlertStyle = NSAlertStyle.Critical,
+                    InformativeText = "Passwords are not simmilar",
+                    MessageText = "Make sure that passwords are simmilar"
+                };
+                alert.RunModal();
+                return true;
+            }
+            return false;
+        }
+        partial void registrationButton(NSObject sender)
+        {
+            var username = usernameField.StringValue;
+            var password = passwordField.StringValue;
+            var repeatPassword = repeatPasswordField.StringValue;
+            if (areInputsIncorrect(username, password, repeatPassword))
+            {
+                return;
+            };
+
+            string query = "INSERT INTO Users (username, password, isAdmin) VALUES (@username, @password, 0)";
+
+            // Create a MySqlCommand object with the query and the connection
+            using (MySqlConnection connection = new MySqlConnection(((AppDelegate)NSApplication.SharedApplication.Delegate).connectionString))
+            {
+                connection.Open();
+                try
+                {
+                    using (MySqlCommand command = new MySqlCommand(query, connection))
+                    {
+                        // Add the parameters to the command
+                        command.Parameters.AddWithValue("@username", username);
+                        command.Parameters.AddWithValue("@password", password);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var alert = new NSAlert();
+                    alert.AlertStyle = NSAlertStyle.Critical;
+                    alert.MessageText = "Registration Problem";
+                    if (ex.Message == $"Duplicate entry '{username}' for key 'users.username_UNIQUE'")
+                    {
+                        alert.InformativeText = $"Username: {username} is taken";
+                    }
+                    else
+                    {
+                        alert.InformativeText = ex.Message;
+                    }
+                    alert.RunModal();
+                }
+            }
+        }
+    }
 }
