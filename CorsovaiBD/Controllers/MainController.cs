@@ -10,6 +10,15 @@ using CorsovaiBD.Models;
 using CoreGraphics;
 using DotNetEnv;
 using System.Text;
+using System.Linq;
+using WebKit;
+
+using NPOI.XWPF.UserModel;
+
+using OfficeOpenXml;
+using OfficeOpenXml.Table;
+using System.IO;
+using NPOI.WP.UserModel;
 
 namespace CorsovaiBD
 {
@@ -46,6 +55,11 @@ namespace CorsovaiBD
             addRowButton.Enabled = false;
             removeButton.Enabled = false;
 
+            excelButton.Enabled = false;
+            wordButton.Enabled = false;
+
+
+
             tableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
             tableView.SizeToFit();
             tableView.Activated += getSelectedRow;
@@ -68,10 +82,16 @@ namespace CorsovaiBD
         {
             try
             {
+                //bacause user should choose row
                 editRowButton.Enabled = false;
+                removeButton.Enabled = false;
+
                 selectedTableName = tableNames[(int)tableComboBox.SelectedIndex];
                 addRowButton.Enabled = true;
-                removeButton.Enabled = false;
+                excelButton.Enabled = true;
+                wordButton.Enabled = true;
+
+               
             }
             catch (Exception ex)
             {
@@ -174,9 +194,6 @@ namespace CorsovaiBD
             }
         }
 
-
-
-
         public MainController(IntPtr handle) : base(handle)
         {
         }
@@ -185,20 +202,18 @@ namespace CorsovaiBD
         {
             try
             {
-                var query = $"SELECT * FROM {selectedTableName}";
+                var query = $"DELETE FROM {selectedTableName} WHERE Id = @id"; // Replace "Id" with the actual column name representing the ID in your table
 
                 using var connection = new MySqlConnection(builder.ConnectionString);
+                using var command = new MySqlCommand(query, connection);
+                command.Parameters.AddWithValue("@id", selectedRowId);
+
                 connection.Open();
+                command.ExecuteNonQuery();
 
-                var adapter = new MySqlDataAdapter(query, connection);
-                var ds = new DataSet();
-                adapter.Fill(ds);
-                var table = ds.Tables[0];
+                table.Rows[selectedRowIndex].Delete();
+                table.AcceptChanges();
 
-                var builderr = new MySqlCommandBuilder(adapter);
-                ds.Tables[0].Rows[selectedRowIndex].Delete();
-                adapter.Update(ds.Tables[0]);
-                ds.Tables[0].AcceptChanges();
                 dataSource = new MyTableDataSource(table);
                 tableView.DataSource = dataSource;
                 tableView.ReloadData();
@@ -219,9 +234,6 @@ namespace CorsovaiBD
                 alert.RunModal();
             }
         }
-
-
-
 
         partial void reloadTableButton(NSObject sender)
         {
@@ -317,6 +329,7 @@ namespace CorsovaiBD
                         {
                             filtrTable.ImportRow(row);
                         }
+                        table = filtrTable;
                         tableView.DataSource = new MyTableDataSource(filtrTable);
                         tableView.ReloadData();
                     }
@@ -336,15 +349,143 @@ namespace CorsovaiBD
             }
         }
 
+        partial void toExcelButton(NSObject sender)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            // Create a new Excel package
+            using (var excelPackage = new ExcelPackage())
+            {
+                // Create a worksheet in the Excel package
+                var worksheet = excelPackage.Workbook.Worksheets.Add("Table Data");
+
+                // Get the selected table data from the database
+                // Write the column headers to the worksheet
+                for (int i = 0; i < table.Columns.Count; i++)
+                {
+                    worksheet.Cells[1, i + 1].Value = table.Columns[i].ColumnName;
+                }
+
+                // Write the data rows to the worksheet
+                for (int row = 0; row < table.Rows.Count; row++)
+                {
+                    for (int col = 0; col < table.Columns.Count; col++)
+                    {
+                        worksheet.Cells[row + 2, col + 1].Value = table.Rows[row][col];
+                    }
+                }
+
+                // Check if the table has primary keys
+                if (table.PrimaryKey.Length > 0)
+                {
+                    // Get the primary key column names
+                    var primaryKeyColumns = table.PrimaryKey.Select(pk => pk.ColumnName).ToArray();
+
+                    // Write the primary key column headers to the worksheet
+                    for (int i = 0; i < primaryKeyColumns.Length; i++)
+                    {
+                        worksheet.Cells[1, i + table.Columns.Count + 1].Value = primaryKeyColumns[i];
+                    }
+
+                    // Write the primary key values to the worksheet
+                    for (int row = 0; row < table.Rows.Count; row++)
+                    {
+                        for (int col = 0; col < primaryKeyColumns.Length; col++)
+                        {
+                            worksheet.Cells[row + 2, col + table.Columns.Count + 1].Value = table.Rows[row][primaryKeyColumns[col]];
+                        }
+                    }
+                }
+
+                // Create an Excel table from the data
+                var tableRange = worksheet.Cells[1, 1, table.Rows.Count + 1, table.Columns.Count];
+                var excelTable = worksheet.Tables.Add(tableRange, "Table");
+
+                // Set the table style
+                excelTable.TableStyle = TableStyles.Light1;
+
+                // Create a save panel
+                var savePanel = new NSSavePanel
+                {
+                    Title = "Save Excel File",
+                    AllowedFileTypes = new[] { "xlsx" },
+                    NameFieldStringValue = "TableData.xlsx"
+                };
+
+                // Display the save panel
+                if (savePanel.RunModal() == 1)
+                {
+                    var filePath = savePanel.Url.Path;
+
+                    // Save the Excel package to the selected file
+                    var excelData = excelPackage.GetAsByteArray();
+                    var nsData = NSData.FromArray(excelData);
+                    nsData.Save(filePath, true);
+                }
+            }
+
+        }
+
+        partial void toWordButton(NSObject sender)
+        {
+            var doc = new XWPFDocument();
+
+                // Create a new table in the document
+                var tableWord = doc.CreateTable(table.Rows.Count + 1, table.Columns.Count);
+
+                // Write the column headers to the table
+                for (int col = 0; col < table.Columns.Count; col++)
+                {
+                    var cell = tableWord.GetRow(0).GetCell(col);
+                    var paragraph = cell.Paragraphs[0];
+                    var run = paragraph.CreateRun();
+                    run.SetText(table.Columns[col].ColumnName);
+                }
+
+                // Write the data rows to the table
+                for (int row = 0; row < table.Rows.Count; row++)
+                {
+                    for (int col = 0; col < table.Columns.Count; col++)
+                    {
+                        var cell = tableWord.GetRow(row + 1).GetCell(col);
+                        var paragraph = cell.Paragraphs[0];
+                        var run = paragraph.CreateRun();
+                        run.SetText(table.Rows[row][col].ToString());
+                    }
+                }
+
+                // Add the table to the document
+
+                // Create a save panel
+                var savePanel = new NSSavePanel
+                {
+                    Title = "Save Word Document",
+                    AllowedFileTypes = new[] { "docx" },
+                    NameFieldStringValue = "TableData.docx"
+                };
+
+                // Display the save panel
+                if (savePanel.RunModal() == 1)
+                {
+                    var filePath = savePanel.Url.Path;
+
+                    // Save the Word document
+                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        doc.Write(fileStream);
+                        doc.Close();
+                    }
+                }
+            
+
+        }
+
         partial void resetSearchButton(NSObject sender)
         {
             reLoadTable();
             searchConditionLable.StringValue = string.Empty;
 
-
         }
 
-      
         private void getSelectedRow(object sender, EventArgs e)
         {
             try
@@ -364,6 +505,7 @@ namespace CorsovaiBD
             }
 
         }
+
         private void reLoadTable()
         {
             try
@@ -396,6 +538,7 @@ namespace CorsovaiBD
                 alert.RunModal();
             }
         }
+
         private void makeColumnNameList(DataTable Helptable)
         {
 
@@ -411,30 +554,45 @@ namespace CorsovaiBD
 
         partial void selectSearchColumn(NSObject sender)
         {
-
-            selectedColumnType = table.Columns[((int)searchColumnComboBox.SelectedIndex)].DataType.ToString();
-            searchTypeComboBox.RemoveAll();
-            searchTypeComboBox.StringValue = string.Empty;
-
-            searchTypeComboBox.Add(new NSString("По равенству"));
-            switch (selectedColumnType)
+            try
             {
-                case "System.Int32":
-                    searchTypeComboBox.Add(new NSString("Больше"));
-                    searchTypeComboBox.Add(new NSString("Меньше"));
-                    searchTypeComboBox.Add(new NSString("Больше равно"));
-                    searchTypeComboBox.Add(new NSString("Меньше равно"));
-                    break;
+                selectedColumnType = table.Columns[((int)searchColumnComboBox.SelectedIndex)].DataType.ToString();
+                searchTypeComboBox.RemoveAll();
+                searchTypeComboBox.StringValue = string.Empty;
+
+                searchTypeComboBox.Add(new NSString("По равенству"));
+                switch (selectedColumnType)
+                {
+                    case "System.Int32":
+                        searchTypeComboBox.Add(new NSString("Больше"));
+                        searchTypeComboBox.Add(new NSString("Меньше"));
+                        searchTypeComboBox.Add(new NSString("Больше равно"));
+                        searchTypeComboBox.Add(new NSString("Меньше равно"));
+                        break;
 
 
-                case "System.String" or "System.DateTime":
-                    searchTypeComboBox.Add(new NSString("По вхождению"));
-                    searchTypeComboBox.Add(new NSString("Начинается с"));
-                    break;
+                    case "System.String" or "System.DateTime":
+                        searchTypeComboBox.Add(new NSString("По вхождению"));
+                        searchTypeComboBox.Add(new NSString("Начинается с"));
+                        break;
+                }
+
+                searchTypeComboBox.SelectItem(0);
             }
-
-            searchTypeComboBox.SelectItem(0);
-
+            catch (Exception ex)
+            {
+                if (ex.Message != "Cannot find column -1.")
+                {
+                    var alert = new NSAlert
+                    {
+                        AlertStyle = NSAlertStyle.Critical,
+                        InformativeText = ex.Message,
+                        MessageText = "Ошибка"
+                    };
+                    alert.RunModal();
+                }
+                
+            }
 
         }
     }

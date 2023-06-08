@@ -1,16 +1,15 @@
 using System;
-using Foundation;
-using AppKit;
-using CorsovaiBD.Models;
-using CoreGraphics;
-using MySqlConnector;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Configuration;
 using System.Data;
-using System.Linq;
-using System.Reflection.Emit;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using AppKit;
+using CoreGraphics;
+using CorsovaiBD.Models;
+using Foundation;
+using MySqlConnector;
 
 namespace CorsovaiBD
 {
@@ -43,7 +42,7 @@ namespace CorsovaiBD
 
                 var table = ds.Tables[0];
                 var columns = table.Columns;
-
+                columns.Remove("Id");
                 // Получаем список внешних ключей для выбранной таблицы
                 var foreignKeys = GetForeignKeys(connection, MainController.selectedTableName);
 
@@ -60,8 +59,7 @@ namespace CorsovaiBD
                         DrawsBackground = false
                     };
                     View.AddSubview(label);
-
-                    if (columnName == "Photo") // Check if the column is the photo column
+                    if (column.DataType.ToString() == "System.Byte[]")
                     {
                         // Create a button for selecting the photo
                         var selectPhotoButton = new NSButton(new CGRect(xPos + labelWidth + margin, yPos, 100, inputHeight))
@@ -69,8 +67,8 @@ namespace CorsovaiBD
                             Title = "Select Photo",
                             BezelStyle = NSBezelStyle.Rounded,
                             Target = this, // Set the target to the current instance
-                            Action = new ObjCRuntime.Selector("SelectPhoto:"),
-                            Tag = 999 // Set a tag to identify the button later
+                            Action = new ObjCRuntime.Selector("selectPhoto:"),
+                            Identifier = columnName
                         };
 
                         View.AddSubview(selectPhotoButton);
@@ -78,15 +76,16 @@ namespace CorsovaiBD
                         // Create an NSImageView for displaying the photo
                         var imageView = new NSImageView(new CGRect(xPos + labelWidth + margin + 120, yPos, inputWidth - 120, inputHeight))
                         {
+                            Identifier = columnName,
                             Image = NSImage.ImageNamed(NSImageName.UserGuest), // Placeholder image
                             Editable = true,
                         };
 
                         // Set a tag on the image view to identify it later
-                        imageView.Tag = 998;
 
                         View.AddSubview(imageView);
                     }
+
 
                     else if (foreignKeys.Any(fk => fk.ColumnName == columnName))
                     {
@@ -148,11 +147,12 @@ namespace CorsovaiBD
             }
         }
 
-        [Action("SelectPhoto:")]
-        private void SelectPhoto(NSObject sender)
+
+        [Action("selectPhoto:")]
+        private void selectPhoto(NSObject sender)
         {
             var button = sender as NSButton;
-            if (button != null && button.Tag == 999)
+            if (button != null)
             {
                 var openPanel = NSOpenPanel.OpenPanel;
                 openPanel.AllowedFileTypes = new string[] { "public.image" }; // Limit to image files
@@ -170,13 +170,15 @@ namespace CorsovaiBD
                             // Get the path of the selected image file
                             var imagePath = selectedUrl.Path;
 
-                            // Find the corresponding image view based on the tag
-                            var imageView = View.ViewWithTag(998) as NSImageView;
+                            // Find the corresponding image view based on the identifier
+                            var columnName = button.Identifier.ToString();
+                            var imageView = View.Subviews.OfType<NSImageView>().FirstOrDefault(view => view.Identifier == columnName);
                             if (imageView != null)
                             {
                                 // Update the image view with the selected photo
                                 var image = new NSImage(imagePath);
                                 imageView.Image = image;
+
                             }
                         }
                     }
@@ -185,27 +187,7 @@ namespace CorsovaiBD
         }
 
 
-        private void SavePhotoToDatabase(byte[] photoData)
-        {
-            try
-            {
-                using var connection = new MySqlConnection(MainController.builder.ConnectionString);
-                connection.Open();
 
-                // Prepare the SQL statement to insert the photo data into the database
-                var query = $"INSERT INTO {MainController.selectedTableName} (Photo) VALUES (@photoData)";
-                using var command = new MySqlCommand(query, connection);
-                command.Parameters.AddWithValue("@photoData", photoData);
-
-                // Execute the SQL statement
-                command.ExecuteNonQuery();
-            }
-            catch (Exception ex)
-            {
-                // Handle the exception or display an error message
-                Console.WriteLine($"Error saving photo to database: {ex.Message}");
-            }
-        }
 
 
         private void AddRow(object sender, EventArgs e)
@@ -226,37 +208,56 @@ namespace CorsovaiBD
                             var columnName = input.Identifier.ToString();
                             dataTable.Columns.Add(columnName);
                         }
+                        if (subview is NSImageView photo)
+                        {
+                            var columnName = photo.Identifier.ToString();
+                            dataTable.Columns.Add(columnName);
+                        }
                     }
 
                     // Create a new row and populate it with values from NSTextField inputs
                     var row = dataTable.NewRow();
                     foreach (var subview in View.Subviews)
                     {
+
+                        if (subview is NSComboBox combo)
+                        {
+                            var columnName = combo.Identifier.ToString();
+                            row[columnName] = combo.StringValue.Split(" ")[0];
+                            continue;
+                        }
                         if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
                         {
                             var columnName = input.Identifier.ToString();
-                            row[columnName] = input.StringValue.Split(" ")[0];
+                            row[columnName] = input.StringValue;
+                            continue;
                         }
+
+
+                        if (subview is NSImageView photo)
+                        {
+                            var tiffData = photo.Image.AsTiff();
+                            var bitmap = new NSBitmapImageRep(tiffData);
+                            var properties = new NSDictionary();
+                            var pngData = bitmap.RepresentationUsingTypeProperties(NSBitmapImageFileType.Png, properties);
+                            var byteArray = new byte[pngData.Length];
+                            System.Runtime.InteropServices.Marshal.Copy(pngData.Bytes, byteArray, 0, (int)pngData.Length);
+                            var base64String = Convert.ToBase64String(byteArray);
+
+                            var columnName = photo.Identifier;
+                            row[columnName] = base64String;
+                        }
+
+
+
+
                     }
 
                     // Add the new row to the DataTable
                     dataTable.Rows.Add(row);
 
                     // Handle the photo input separately
-                    var photoImageView = View.Subviews.OfType<NSImageView>().FirstOrDefault(iv => iv.Identifier == "Photo");
-                    if (photoImageView != null && photoImageView.Image != null)
-                    {
-                        var tiffData = photoImageView.Image.AsTiff();
 
-                        // Convert the TIFF data to a byte array
-                        using (var tiffStream = new MemoryStream())
-                        {
-                            tiffData.AsStream().CopyTo(tiffStream);
-                            var photoData = tiffStream.ToArray();
-
-                            row["Photo"] = photoData;
-                        }
-                    }
 
                     var adapter = new MySqlDataAdapter($"SELECT * FROM {MainController.selectedTableName}", connection);
 
@@ -267,7 +268,7 @@ namespace CorsovaiBD
                     adapter.Update(dataTable);
 
                     // Close the add row form
-                    DismissViewController(this);
+                    this.View.Window.Close();
                 }
             }
             catch (Exception ex)
@@ -282,6 +283,10 @@ namespace CorsovaiBD
                 alert.RunModal();
             }
         }
+
+        
+
+
 
 
 

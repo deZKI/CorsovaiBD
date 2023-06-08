@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Security.Cryptography;
 using AppKit;
 using CoreGraphics;
 using CorsovaiBD.Models;
@@ -151,6 +152,7 @@ namespace CorsovaiBD
 
                     // Create a new row and populate it with values from NSTextField's
                     int countEmptyRow = 0;
+                    var selectedRow = dataTable.Select($"ID = {MainController.selectedRowId}").FirstOrDefault();
                     foreach (var subview in View.Subviews)
                     {
                         if (subview is NSTextField input && !string.IsNullOrEmpty(input.Identifier))
@@ -161,7 +163,7 @@ namespace CorsovaiBD
                             {
                                 countEmptyRow += 1;
                             }
-                            dataTable.Rows[MainController.selectedRowIndex][columnName] = input.StringValue.Split(" ")[0];
+                            selectedRow[columnName] = input.StringValue;
                         }
                     }
 
@@ -180,9 +182,9 @@ namespace CorsovaiBD
                     
                     // Добавляем новую строку в таблицу
                     adapter.Update(dataTable);
-                   
+
                     // Закрываем форму добавления новой строки
-                    DismissViewController(this);
+                    this.View.Window.Close();
                 }
             }
             catch (Exception ex)

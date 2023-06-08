@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using AppKit;
 using Foundation;
 
@@ -15,21 +16,18 @@ namespace CorsovaiBD
 
         public void loadPhoto(byte[] photoData)
         {
-            this.photoData = photoData;
-
+            
             var imageView = new NSImageView
             {
-                Image = NSImage.FromStream(NSData.FromArray(photoData).AsStream()),
+                Image = NSImage.FromStream(new MemoryStream(photoData)),
+                Frame = View.Bounds,
+                AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable,
+                ImageScaling = NSImageScale.ProportionallyUpOrDown
             };
 
-            // Set the image view frame and properties
-            imageView.Frame = View.Bounds;
-            imageView.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
-            imageView.ImageScaling = NSImageScale.ProportionallyUpOrDown;
-
-            // Add the NSImageView to the content view
             View.AddSubview(imageView);
         }
+
 
         public override void ViewDidLoad()
         {

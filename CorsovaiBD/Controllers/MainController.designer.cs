@@ -19,6 +19,9 @@ namespace CorsovaiBD
 		AppKit.NSButton editRowButton { get; set; }
 
 		[Outlet]
+		AppKit.NSButton excelButton { get; set; }
+
+		[Outlet]
 		AppKit.NSButton removeButton { get; set; }
 
 		[Outlet]
@@ -36,6 +39,9 @@ namespace CorsovaiBD
 		[Outlet]
 		AppKit.NSTableView tableView { get; set; }
 
+		[Outlet]
+		AppKit.NSButton wordButton { get; set; }
+
 		[Action ("reloadTableButton:")]
 		partial void reloadTableButton (Foundation.NSObject sender);
 
@@ -50,12 +56,23 @@ namespace CorsovaiBD
 
 		[Action ("selectSearchColumn:")]
 		partial void selectSearchColumn (Foundation.NSObject sender);
+
+		[Action ("toExcelButton:")]
+		partial void toExcelButton (Foundation.NSObject sender);
+
+		[Action ("toWordButton:")]
+		partial void toWordButton (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (removeButton != null) {
-				removeButton.Dispose ();
-				removeButton = null;
+			if (wordButton != null) {
+				wordButton.Dispose ();
+				wordButton = null;
+			}
+
+			if (excelButton != null) {
+				excelButton.Dispose ();
+				excelButton = null;
 			}
 
 			if (addRowButton != null) {
@@ -66,6 +83,11 @@ namespace CorsovaiBD
 			if (editRowButton != null) {
 				editRowButton.Dispose ();
 				editRowButton = null;
+			}
+
+			if (removeButton != null) {
+				removeButton.Dispose ();
+				removeButton = null;
 			}
 
 			if (searchColumnComboBox != null) {

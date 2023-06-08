@@ -184,11 +184,11 @@
                 <viewController title="MainController" storyboardIdentifier="MainController" id="XfG-lQ-9wD" customClass="MainController" sceneMemberID="viewController">
                     <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
                         <rect key="frame" x="0.0" y="0.0" width="1050" height="520"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView fixedFrame="YES" borderType="groove" autohidesScrollers="YES" horizontalLineScroll="44" horizontalPageScroll="10" verticalLineScroll="44" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DSn-58-xtu">
                                 <rect key="frame" x="26" y="66" width="781" height="415"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <clipView key="contentView" drawsBackground="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kbU-4P-6jT">
                                     <rect key="frame" x="2" y="2" width="777" height="411"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -321,11 +321,68 @@
                                     <segue destination="kWd-FD-uqw" kind="show" id="wtY-Lu-hgl"/>
                                 </connections>
                             </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pzy-Gw-bdk">
+                                <rect key="frame" x="817" y="223" width="81" height="32"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <buttonCell key="cell" type="push" title="ToExcel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="AW1-eQ-cHB">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="toExcelButton:" target="XfG-lQ-9wD" id="b3C-cM-lvY"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kZG-cg-Aa6">
+                                <rect key="frame" x="896" y="223" width="84" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="ToWord" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="deZ-1c-HHl">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="toWordButton:" target="XfG-lQ-9wD" id="gje-BK-SdI"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lXm-X5-Kpx">
+                                <rect key="frame" x="817" y="191" width="81" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Print" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="TGj-DH-tp1">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CWw-hy-VCV">
+                                <rect key="frame" x="896" y="191" width="84" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="ToPdf" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4pm-vv-AfL">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vjE-PU-ejl">
+                                <rect key="frame" x="824" y="258" width="67" height="21"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="от" drawsBackground="YES" id="5a9-Zt-IkZ">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="TKW-xY-rea">
+                                <rect key="frame" x="903" y="258" width="70" height="21"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" placeholderString="до" drawsBackground="YES" id="05c-ZU-NPx">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
                         </subviews>
                     </view>
                     <connections>
                         <outlet property="addRowButton" destination="vYl-6T-Hu3" id="ESc-Uy-sMA"/>
                         <outlet property="editRowButton" destination="HlA-dG-qpr" id="Umr-Si-8xf"/>
+                        <outlet property="excelButton" destination="Pzy-Gw-bdk" id="CEg-BW-2AG"/>
                         <outlet property="removeButton" destination="Xxb-sy-dKV" id="Is0-vr-N5P"/>
                         <outlet property="removeRowButton" destination="Xxb-sy-dKV" id="fGs-X8-yA7"/>
                         <outlet property="searchColumnComboBox" destination="I6f-qh-Rje" id="Wl1-gg-h9c"/>
@@ -333,6 +390,7 @@
                         <outlet property="searchTypeComboBox" destination="VVi-X6-idG" id="fOO-SP-17b"/>
                         <outlet property="tableComboBox" destination="ofm-nP-wlz" id="7aT-dh-gaw"/>
                         <outlet property="tableView" destination="we0-RL-rR0" id="VZP-vw-WRc"/>
+                        <outlet property="wordButton" destination="kZG-cg-Aa6" id="pSH-lJ-cK7"/>
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
@@ -489,20 +547,7 @@ Gw
                     </view>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="-331" y="1775"/>
-        </scene>
-        <!--Изменить Строку-->
-        <scene sceneID="8Iq-og-sC4">
-            <objects>
-                <customObject id="Sgc-RK-olg" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-                <viewController title="Изменить Строку" id="z6c-SY-hKv" customClass="EditRowForm" sceneMemberID="viewController">
-                    <view key="view" id="5MJ-0l-jwX">
-                        <rect key="frame" x="0.0" y="0.0" width="728" height="651"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="579" y="1582"/>
+            <point key="canvasLocation" x="10" y="1733"/>
         </scene>
         <!--Login-->
         <scene sceneID="wqC-z7-39j">
