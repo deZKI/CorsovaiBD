@@ -1,28 +1,25 @@
-using AppKit;
-using Foundation;
-using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
-
-using CorsovaiBD.Models;
-using CoreGraphics;
-using DotNetEnv;
-using System.Text;
+using System.IO;
 using System.Linq;
-using WebKit;
-
+using AppKit;
+using CoreGraphics;
+using CorsovaiBD.Models;
+using Foundation;
+using MySqlConnector;
 using NPOI.XWPF.UserModel;
+
+using PdfKit;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
-using System.IO;
-using NPOI.WP.UserModel;
+
 
 namespace CorsovaiBD
 {
-	public partial class MainController : NSViewController
+    public partial class MainController : NSViewController
 	{
         private readonly List<string> tableNames = new List<string>();
 
@@ -57,7 +54,8 @@ namespace CorsovaiBD
 
             excelButton.Enabled = false;
             wordButton.Enabled = false;
-
+            pdfButton.Enabled = false;
+            printButton.Enabled = false;
 
 
             tableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
@@ -90,8 +88,10 @@ namespace CorsovaiBD
                 addRowButton.Enabled = true;
                 excelButton.Enabled = true;
                 wordButton.Enabled = true;
+                pdfButton.Enabled = true;
+                printButton.Enabled = true;
 
-               
+
             }
             catch (Exception ex)
             {
@@ -242,112 +242,95 @@ namespace CorsovaiBD
 
         partial void searchButton(NSObject sender)
         {
-            DataTable filtrTable;
-            if (searchConditionLable.StringValue == string.Empty)
-            {
 
-                var alert = new NSAlert
-                {
-                    AlertStyle = NSAlertStyle.Critical,
-                    InformativeText = "Не введено условие для поиска",
-                    MessageText = "Ошибка"
-                };
-                alert.RunModal();
+            if (searchColumnComboBox.SelectedIndex == -1)
+            {
+                showAlert("Не выбрано имя столбца для поиска", "Ошибка");
+                return;
             }
-            else
+
+            string filtrColumnName = searchColumnComboBox.SelectedValue.ToString();
+            string filtrValue = searchConditionLable.StringValue;
+            string type = searchTypeComboBox.SelectedValue.ToString();
+
+            if (searchConditionLable.StringValue == string.Empty &&
+                type != "Диапазон")
             {
+                showAlert("Не введено условие для поиска", "Ошибка");
+                return;
+            }
 
-                if (searchColumnComboBox.SelectedIndex == -1)
+            selectedTableName = tableNames[(int)tableComboBox.SelectedIndex];
+            string filtr = "";
+
+            if (selectedColumnType == "System.DateTime")
+            {
+                DateTime result_date;
+                bool success_data = DateTime.TryParse(filtrValue, out result_date);
+                if (!success_data)
                 {
-                    var alert = new NSAlert
-                    {
-                        AlertStyle = NSAlertStyle.Critical,
-                        InformativeText = "Не выбрано имя стобца для поиска",
-                        MessageText = "Ошибка"
-                    };
-                    alert.RunModal();
+                    showAlert("Ввели не дату, а колонку с датой", "Ошибка");
+                    return;
                 }
-                else
+            }
+
+            switch (type)
+            {
+                case "По равенству":
+                    filtr = $"{filtrColumnName} = '{filtrValue}'";
+                    break;
+                case "По вхождению":
+                    filtr = $"{filtrColumnName} LIKE '%{filtrValue}%'";
+                    break;
+                case "Начинается с":
+                    filtr = $"{filtrColumnName} LIKE '{filtrValue}%'";
+                    break;
+                case "Больше":
+                    filtr = $"{filtrColumnName} > '{filtrValue}'";
+                    break;
+                case "Больше равно":
+                    filtr = $"{filtrColumnName} >= '{filtrValue}'";
+                    break;
+                case "Меньше":
+                    filtr = $"{filtrColumnName} < '{filtrValue}'";
+                    break;
+                case "Меньше равно":
+                    filtr = $"{filtrColumnName} <= '{filtrValue}'";
+                    break;
+                case "Диапазон":
+                    filtr = $"{filtrColumnName} >= '{diapFrom.StringValue}' and  {filtrColumnName} <= '{diapTo.StringValue}'";
+                    break;
+            }
+
+            try
+            {
+                DataRow[] helpDataRows = table.Select(filtr);
+                DataTable filteredTable = table.Clone();
+                foreach (var row in helpDataRows)
                 {
-                    string filtrColumnName = searchColumnComboBox.SelectedValue.ToString();
-                    string filtrValue = searchConditionLable.StringValue;
-                    string type = searchTypeComboBox.SelectedValue.ToString();
-                    selectedTableName = tableNames[(int)tableComboBox.SelectedIndex];
-                    string filtr = "";
-                    if (selectedColumnType == "System.DateTime")
-                    {
-                        DateTime result_date;
-                        bool success_data = DateTime.TryParse(filtrValue, out result_date);
-                        if (!success_data)
-                        {
-                            var alert = new NSAlert
-                            {
-                                AlertStyle = NSAlertStyle.Critical,
-                                InformativeText = "Ввели не дату, а колонка с датой",
-                                MessageText = "Ошибка"
-                            };
-                            alert.RunModal();
-                        }
-                        return;
-                    }
-
-                    switch (type)
-                    {
-                        case "По равенству":
-                            filtr = filtrColumnName + "= '" + filtrValue + "'";
-                            break;
-                        case "По вхождению":
-                            filtr = filtrColumnName + " LIKE '%" + filtrValue + "%'";
-                            break;
-
-                        case "Начинается с":
-                            filtr = filtrColumnName + " LIKE '" + filtrValue + "%'";
-                            break;
-
-                        case "Больше":
-                            filtr = filtrColumnName + " > '" + filtrValue + "'";
-                            break;
-
-                        case "Больше равно":
-                            filtr = filtrColumnName + " >= '" + filtrValue + "'";
-                            break;
-
-                        case "Меньше":
-                            filtr = filtrColumnName + " < '" + filtrValue + "'";
-                            break;
-
-                        case "Меньше равно":
-                            filtr = filtrColumnName + " <= '" + filtrValue + "'";
-                            break;
-
-                    }
-                    try
-                    {
-                        DataRow[] HelpDataRows = table.Select(filtr);
-                        filtrTable = table.Clone();
-                        foreach (var row in HelpDataRows)
-                        {
-                            filtrTable.ImportRow(row);
-                        }
-                        table = filtrTable;
-                        tableView.DataSource = new MyTableDataSource(filtrTable);
-                        tableView.ReloadData();
-                    }
-                    catch (Exception ex)
-                    {
-                        var alert = new NSAlert
-                        {
-                            AlertStyle = NSAlertStyle.Critical,
-                            InformativeText = ex.Message,
-                            MessageText = "Ошибка"
-                        };
-                        alert.RunModal();
-                    }
-
-
+                    filteredTable.ImportRow(row);
                 }
+                table = filteredTable;
+                tableView.DataSource = new MyTableDataSource(filteredTable);
+                tableView.ReloadData();
+            }
+            catch (Exception ex)
+            {
+                showAlert(ex.Message, "Ошибка");
             }
         }
+
+        private void showAlert(string message, string title)
+        {
+            var alert = new NSAlert
+            {
+                AlertStyle = NSAlertStyle.Critical,
+                InformativeText = message,
+                MessageText = title
+            };
+            alert.RunModal();
+        }
+
 
         partial void toExcelButton(NSObject sender)
         {
@@ -401,7 +384,7 @@ namespace CorsovaiBD
                 var excelTable = worksheet.Tables.Add(tableRange, "Table");
 
                 // Set the table style
-                excelTable.TableStyle = TableStyles.Light1;
+                excelTable.TableStyle = OfficeOpenXml.Table.TableStyles.Light1;
 
                 // Create a save panel
                 var savePanel = new NSSavePanel
@@ -479,11 +462,96 @@ namespace CorsovaiBD
 
         }
 
+        partial void toPdfButton(NSObject sender)
+        {
+
+            // Create a new PDF document
+            PdfDocument document = new PdfDocument();
+
+            // Create a new PDF page
+            PdfPage page = new PdfPage();
+
+            // Set the page size to A4
+
+            // Create a new PDF view to draw on the page
+            PdfView pdfView = new PdfView();
+            pdfView.Document = document;
+            pdfView.ScaleFactor = 1.0f;
+            pdfView.Frame = new CGRect(0, 0, 595, 842);
+
+            // Create a new PDF text annotation to write the text
+            PdfAnnotationText textAnnotation = new PdfAnnotationText();
+            textAnnotation.Page = page;
+            textAnnotation.Contents = "Hello, World!";
+            // Add the PDF view to the page
+
+            // Create a new PDF text annotation to draw the data
+
+
+            // Set the font and font size for the text
+            NSFont font = NSFont.FromFontName("Arial", 12);
+
+            // Set the initial y-coordinate for the text
+            double y = 792; // A4 page height - initial margin
+
+            // Draw the column headers
+            for (int col = 0; col < table.Columns.Count; col++)
+            {
+                string columnName = table.Columns[col].ColumnName;
+                NSAttributedString headerString = new NSAttributedString(columnName, font);
+                CGRect textBounds = new CGRect(30, y, 535, 20); // Set the position and size of the text bounds
+
+                PdfAnnotationText text = new PdfAnnotationText();
+                text.Contents = columnName; // Set the content of the annotation
+
+                // Add the text annotation to the page
+                page.AddAnnotation(text);
+                y -= 20;
+            }
+
+            // Draw the data rows
+            for (int row = 0; row < table.Rows.Count; row++)
+            {
+                y -= 10; // Add some spacing between rows
+                for (int col = 0; col < table.Columns.Count; col++)
+                {
+                    string cellText = table.Rows[row][col].ToString();
+                    NSAttributedString cellString = new NSAttributedString(cellText, font);
+                    CGRect textBounds = new CGRect(30, y, 535, 20); // Set the position and size of the text bounds
+
+                    PdfAnnotationText text = new PdfAnnotationText();
+                    textAnnotation.Contents = cellText; // Set the content of the annotation
+                    // Add the text annotation to the page
+                    page.AddAnnotation(text);
+
+                    y -= 20;
+                }
+            }
+
+
+            // Add the page to the document
+            page.DisplaysAnnotations = true;
+            document.InsertPage(page, 0);
+            // Save the PDF document to a file
+            NSSavePanel savePanel = new NSSavePanel();
+            savePanel.Title = "Save PDF Document";
+            savePanel.AllowedFileTypes = new string[] { "pdf" };
+            savePanel.NameFieldStringValue = "TableData.pdf";
+
+            // Display the save panel
+            if (savePanel.RunModal() == 1)
+            {
+                string filePath = savePanel.Url.Path;
+                document.Write(filePath);
+                Console.WriteLine($"PDF document saved: {filePath}");
+            }
+            
+        }
+
         partial void resetSearchButton(NSObject sender)
         {
             reLoadTable();
             searchConditionLable.StringValue = string.Empty;
-
         }
 
         private void getSelectedRow(object sender, EventArgs e)
@@ -528,14 +596,17 @@ namespace CorsovaiBD
             }
             catch (Exception ex)
             {
-                // Отображаем окно с ошибкой
-                var alert = new NSAlert
+                if (ex.Message != "Index was out of range. Must be non-negative and less than the size of the collection.")
                 {
-                    AlertStyle = NSAlertStyle.Critical,
-                    InformativeText = ex.Message,
-                    MessageText = "Ошибка"
-                };
-                alert.RunModal();
+                    // Отображаем окно с ошибкой
+                    var alert = new NSAlert
+                    {
+                        AlertStyle = NSAlertStyle.Critical,
+                        InformativeText = ex.Message,
+                        MessageText = "Ошибка"
+                    };
+                    alert.RunModal();
+                }
             }
         }
 
@@ -568,6 +639,7 @@ namespace CorsovaiBD
                         searchTypeComboBox.Add(new NSString("Меньше"));
                         searchTypeComboBox.Add(new NSString("Больше равно"));
                         searchTypeComboBox.Add(new NSString("Меньше равно"));
+                        searchTypeComboBox.Add(new NSString("Диапазон"));
                         break;
 
 
@@ -581,7 +653,7 @@ namespace CorsovaiBD
             }
             catch (Exception ex)
             {
-                if (ex.Message != "Cannot find column -1.")
+                if (ex.Message != "Object reference not set to an instance of an object")
                 {
                     var alert = new NSAlert
                     {

@@ -350,6 +350,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="toPrintButton:" target="XfG-lQ-9wD" id="yNO-h7-Hry"/>
+                                </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CWw-hy-VCV">
                                 <rect key="frame" x="896" y="191" width="84" height="32"/>
@@ -358,6 +361,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="toPdfButton:" target="XfG-lQ-9wD" id="hBB-BV-koc"/>
+                                </connections>
                             </button>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vjE-PU-ejl">
                                 <rect key="frame" x="824" y="258" width="67" height="21"/>
@@ -381,8 +387,12 @@
                     </view>
                     <connections>
                         <outlet property="addRowButton" destination="vYl-6T-Hu3" id="ESc-Uy-sMA"/>
+                        <outlet property="diapFrom" destination="vjE-PU-ejl" id="n2f-ID-uOZ"/>
+                        <outlet property="diapTo" destination="TKW-xY-rea" id="4qI-6R-EZl"/>
                         <outlet property="editRowButton" destination="HlA-dG-qpr" id="Umr-Si-8xf"/>
                         <outlet property="excelButton" destination="Pzy-Gw-bdk" id="CEg-BW-2AG"/>
+                        <outlet property="pdfButton" destination="CWw-hy-VCV" id="LNr-yH-dMn"/>
+                        <outlet property="printButton" destination="lXm-X5-Kpx" id="l4j-gx-DAY"/>
                         <outlet property="removeButton" destination="Xxb-sy-dKV" id="Is0-vr-N5P"/>
                         <outlet property="removeRowButton" destination="Xxb-sy-dKV" id="fGs-X8-yA7"/>
                         <outlet property="searchColumnComboBox" destination="I6f-qh-Rje" id="Wl1-gg-h9c"/>
