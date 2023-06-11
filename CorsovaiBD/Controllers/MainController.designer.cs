@@ -37,6 +37,12 @@ namespace CorsovaiBD
 		AppKit.NSButton removeButton { get; set; }
 
 		[Outlet]
+		AppKit.NSButton reportBuildingButton { get; set; }
+
+		[Outlet]
+		AppKit.NSButton reportHomeButton { get; set; }
+
+		[Outlet]
 		AppKit.NSComboBox searchColumnComboBox { get; set; }
 
 		[Outlet]
@@ -83,14 +89,9 @@ namespace CorsovaiBD
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (printButton != null) {
-				printButton.Dispose ();
-				printButton = null;
-			}
-
-			if (pdfButton != null) {
-				pdfButton.Dispose ();
-				pdfButton = null;
+			if (addRowButton != null) {
+				addRowButton.Dispose ();
+				addRowButton = null;
 			}
 
 			if (diapFrom != null) {
@@ -103,11 +104,6 @@ namespace CorsovaiBD
 				diapTo = null;
 			}
 
-			if (addRowButton != null) {
-				addRowButton.Dispose ();
-				addRowButton = null;
-			}
-
 			if (editRowButton != null) {
 				editRowButton.Dispose ();
 				editRowButton = null;
@@ -118,9 +114,29 @@ namespace CorsovaiBD
 				excelButton = null;
 			}
 
+			if (pdfButton != null) {
+				pdfButton.Dispose ();
+				pdfButton = null;
+			}
+
+			if (printButton != null) {
+				printButton.Dispose ();
+				printButton = null;
+			}
+
 			if (removeButton != null) {
 				removeButton.Dispose ();
 				removeButton = null;
+			}
+
+			if (reportBuildingButton != null) {
+				reportBuildingButton.Dispose ();
+				reportBuildingButton = null;
+			}
+
+			if (reportHomeButton != null) {
+				reportHomeButton.Dispose ();
+				reportHomeButton = null;
 			}
 
 			if (searchColumnComboBox != null) {

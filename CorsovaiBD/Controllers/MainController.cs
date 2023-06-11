@@ -11,18 +11,22 @@ using Foundation;
 using MySqlConnector;
 using NPOI.XWPF.UserModel;
 
-using PdfKit;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 using OfficeOpenXml;
 using OfficeOpenXml.Table;
 
+
+using System.Drawing;
+using System.Drawing.Printing;
 
 namespace CorsovaiBD
 {
     public partial class MainController : NSViewController
 	{
         private readonly List<string> tableNames = new List<string>();
-
+        public User currentUser = new User("Anno", false);
         public static string selectedTableName;
         public static readonly MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder
         {
@@ -42,7 +46,9 @@ namespace CorsovaiBD
         {
             base.ViewDidLoad();
             // Do any additional setup after loading the view.
+            currentUser = ((AppDelegate)NSApplication.SharedApplication.Delegate).currentUser;
             loadTableNames();
+            
 
             tableComboBox.UsesDataSource = true;
             tableComboBox.DataSource = new ComboBoxDataSource(tableNames, tableComboBox);
@@ -53,9 +59,11 @@ namespace CorsovaiBD
             removeButton.Enabled = false;
 
             excelButton.Enabled = false;
-            wordButton.Enabled = false;
-            pdfButton.Enabled = false;
+            wordButton.Enabled = false;  
             printButton.Enabled = false;
+
+            reportBuildingButton.Enabled = false;
+            reportHomeButton.Enabled = false;
 
 
             tableView.ColumnAutoresizingStyle = NSTableViewColumnAutoresizingStyle.Uniform;
@@ -74,7 +82,14 @@ namespace CorsovaiBD
                 string tableName = reader.GetString(0);
                 tableNames.Add(tableName);
             }
+            if (currentUser.isAdmin != true)
+            {
+                tableNames.Remove("Users");
 
+                addRowButton.Hidden = true;
+                editRowButton.Hidden = true;
+                removeButton.Hidden = true;
+            }
         }
         private void showSelectedTable(object sender, EventArgs e)
         {
@@ -84,13 +99,19 @@ namespace CorsovaiBD
                 editRowButton.Enabled = false;
                 removeButton.Enabled = false;
 
+                reportHomeButton.Enabled = false;
+                reportBuildingButton.Enabled = false;
+
                 selectedTableName = tableNames[(int)tableComboBox.SelectedIndex];
+
                 addRowButton.Enabled = true;
                 excelButton.Enabled = true;
+
+                
                 wordButton.Enabled = true;
-                pdfButton.Enabled = true;
                 printButton.Enabled = true;
 
+                
 
             }
             catch (Exception ex)
@@ -237,7 +258,7 @@ namespace CorsovaiBD
 
         partial void reloadTableButton(NSObject sender)
         {
-            reLoadTable();
+            reloadTable();
         }
 
         partial void searchButton(NSObject sender)
@@ -391,7 +412,7 @@ namespace CorsovaiBD
                 {
                     Title = "Save Excel File",
                     AllowedFileTypes = new[] { "xlsx" },
-                    NameFieldStringValue = "TableData.xlsx"
+                    NameFieldStringValue = $"{selectedTableName}.xlsx"
                 };
 
                 // Display the save panel
@@ -443,7 +464,7 @@ namespace CorsovaiBD
                 {
                     Title = "Save Word Document",
                     AllowedFileTypes = new[] { "docx" },
-                    NameFieldStringValue = "TableData.docx"
+                    NameFieldStringValue = $"{selectedTableName}.docx"
                 };
 
                 // Display the save panel
@@ -456,101 +477,54 @@ namespace CorsovaiBD
                     {
                         doc.Write(fileStream);
                         doc.Close();
+                        
                     }
                 }
-            
-
         }
 
-        partial void toPdfButton(NSObject sender)
+
+        partial void toPrintButton(NSObject sender)
         {
+            // Create a print info object
+            var printInfo = NSPrintInfo.SharedPrintInfo;
 
-            // Create a new PDF document
-            PdfDocument document = new PdfDocument();
+            // Configure the print settings
+            printInfo.Orientation = NSPrintingOrientation.Landscape;
+            printInfo.HorizontalPagination = NSPrintingPaginationMode.Auto;
+            printInfo.VerticalPagination = NSPrintingPaginationMode.Auto;
+            printInfo.LeftMargin = 36;
+            printInfo.RightMargin = 36;
+            printInfo.TopMargin = 36;
+            printInfo.BottomMargin = 36;
 
-            // Create a new PDF page
-            PdfPage page = new PdfPage();
+            // Create a text container for the document
+            var textContainer = new NSTextContainer();
+            textContainer.LineFragmentPadding = 0;
 
-            // Set the page size to A4
+            var printOperation = NSPrintOperation.FromView(tableView, printInfo);
 
-            // Create a new PDF view to draw on the page
-            PdfView pdfView = new PdfView();
-            pdfView.Document = document;
-            pdfView.ScaleFactor = 1.0f;
-            pdfView.Frame = new CGRect(0, 0, 595, 842);
-
-            // Create a new PDF text annotation to write the text
-            PdfAnnotationText textAnnotation = new PdfAnnotationText();
-            textAnnotation.Page = page;
-            textAnnotation.Contents = "Hello, World!";
-            // Add the PDF view to the page
-
-            // Create a new PDF text annotation to draw the data
-
-
-            // Set the font and font size for the text
-            NSFont font = NSFont.FromFontName("Arial", 12);
-
-            // Set the initial y-coordinate for the text
-            double y = 792; // A4 page height - initial margin
-
-            // Draw the column headers
-            for (int col = 0; col < table.Columns.Count; col++)
-            {
-                string columnName = table.Columns[col].ColumnName;
-                NSAttributedString headerString = new NSAttributedString(columnName, font);
-                CGRect textBounds = new CGRect(30, y, 535, 20); // Set the position and size of the text bounds
-
-                PdfAnnotationText text = new PdfAnnotationText();
-                text.Contents = columnName; // Set the content of the annotation
-
-                // Add the text annotation to the page
-                page.AddAnnotation(text);
-                y -= 20;
-            }
-
-            // Draw the data rows
-            for (int row = 0; row < table.Rows.Count; row++)
-            {
-                y -= 10; // Add some spacing between rows
-                for (int col = 0; col < table.Columns.Count; col++)
-                {
-                    string cellText = table.Rows[row][col].ToString();
-                    NSAttributedString cellString = new NSAttributedString(cellText, font);
-                    CGRect textBounds = new CGRect(30, y, 535, 20); // Set the position and size of the text bounds
-
-                    PdfAnnotationText text = new PdfAnnotationText();
-                    textAnnotation.Contents = cellText; // Set the content of the annotation
-                    // Add the text annotation to the page
-                    page.AddAnnotation(text);
-
-                    y -= 20;
-                }
-            }
-
-
-            // Add the page to the document
-            page.DisplaysAnnotations = true;
-            document.InsertPage(page, 0);
-            // Save the PDF document to a file
-            NSSavePanel savePanel = new NSSavePanel();
-            savePanel.Title = "Save PDF Document";
-            savePanel.AllowedFileTypes = new string[] { "pdf" };
-            savePanel.NameFieldStringValue = "TableData.pdf";
-
-            // Display the save panel
-            if (savePanel.RunModal() == 1)
-            {
-                string filePath = savePanel.Url.Path;
-                document.Write(filePath);
-                Console.WriteLine($"PDF document saved: {filePath}");
-            }
-            
+            // Set the completion handler for the print operation
+            printOperation.RunOperationModal(this.View.Window, tableView, new ObjCRuntime.Selector("printOperationDidRun:success:contextInfo:"), IntPtr.Zero);
         }
+
+        [Export("printOperationDidRun:success:contextInfo:")]
+        private void PrintOperationDidRun(NSPrintOperation printOperation, bool success, IntPtr contextInfo)
+        {
+            // Handle the completion of the print operation
+            if (success)
+            {
+                Console.WriteLine("Print operation completed successfully");
+            }
+            else
+            {
+                Console.WriteLine("Print operation failed");
+            }
+        }
+
 
         partial void resetSearchButton(NSObject sender)
         {
-            reLoadTable();
+            reloadTable();
             searchConditionLable.StringValue = string.Empty;
         }
 
@@ -562,6 +536,15 @@ namespace CorsovaiBD
                 selectedRowId = (int)table.Rows[selectedRowIndex]["Id"];
                 editRowButton.Enabled = true;
                 removeButton.Enabled = true;
+
+                if (selectedTableName == "Home_Ownership"){
+                    reportHomeButton.Enabled = true;
+                }
+                else if (selectedTableName == "Buildings")
+                {
+                    reportBuildingButton.Enabled = true;
+                }
+
             }
             catch (Exception ex)
             {
@@ -574,7 +557,7 @@ namespace CorsovaiBD
 
         }
 
-        private void reLoadTable()
+        public void reloadTable()
         {
             try
             {

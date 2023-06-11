@@ -267,6 +267,8 @@ namespace CorsovaiBD
                     // Update the database with the new row
                     adapter.Update(dataTable);
 
+                    //Update mainController
+
                     // Close the add row form
                     this.View.Window.Close();
                 }

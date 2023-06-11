@@ -68,6 +68,7 @@
     <Folder Include="Models\" />
     <Folder Include="Forms\" />
     <Folder Include="Forms\AuthRegistation\" />
+    <Folder Include="Forms\Reports\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -106,6 +107,14 @@
     <Compile Include="Controllers\PhotoViewController.cs" />
     <Compile Include="Controllers\PhotoViewController.designer.cs">
       <DependentUpon>PhotoViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\HomeReportForm.cs" />
+    <Compile Include="Forms\Reports\HomeReportForm.designer.cs">
+      <DependentUpon>HomeReportForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Reports\BuildingReportForm.cs" />
+    <Compile Include="Forms\Reports\BuildingReportForm.designer.cs">
+      <DependentUpon>BuildingReportForm.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -173,9 +182,6 @@
     <Reference Include="NPOI.OpenXmlFormats">
       <HintPath>..\packages\NPOI.2.5.6\lib\netstandard2.1\NPOI.OpenXmlFormats.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Office.Interop.Excel">
-      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\netstandard2.0\Microsoft.Office.Interop.Excel.dll</HintPath>
-    </Reference>
     <Reference Include="EPPlus.System.Drawing">
       <HintPath>..\packages\EPPlus.System.Drawing.6.1.1\lib\netstandard2.1\EPPlus.System.Drawing.dll</HintPath>
     </Reference>
@@ -184,6 +190,27 @@
     </Reference>
     <Reference Include="System.Configuration.ConfigurationManager">
       <HintPath>..\packages\System.Configuration.ConfigurationManager.7.0.0\lib\netstandard2.0\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <HintPath>bin\Debug\System.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration">
+      <HintPath>packages\System.Configuration\lib\netstandard2.0\System.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Compression.Portable">
+      <HintPath>..\packages\Syncfusion.Compression.Net.Core.21.2.9\lib\netstandard2.0\Syncfusion.Compression.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Licensing">
+      <HintPath>..\packages\Syncfusion.Licensing.21.2.9\lib\Xamarin.Mac\Syncfusion.Licensing.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.OfficeChart.Portable">
+      <HintPath>..\packages\Syncfusion.OfficeChart.Net.Core.21.2.9\lib\netstandard2.0\Syncfusion.OfficeChart.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.DocIO.Portable">
+      <HintPath>..\packages\Syncfusion.DocIO.Net.Core.21.2.9\lib\netstandard2.0\Syncfusion.DocIO.Portable.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />

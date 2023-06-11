@@ -102,6 +102,20 @@ namespace CorsovaiBD
                         command.Parameters.AddWithValue("@username", username);
                         command.Parameters.AddWithValue("@password", password);
                         command.ExecuteNonQuery();
+
+                        var alert = new NSAlert();
+                        alert.AlertStyle = NSAlertStyle.Informational;
+                        alert.MessageText = "SuccesFullRegistration";
+                        
+                        alert.RunModal();
+
+                        var loginFormController = this.Storyboard.InstantiateControllerWithIdentifier("LoginForm") as NSViewController;
+                        if (loginFormController != null)
+                        {
+                            PresentViewControllerAsModalWindow(loginFormController);
+                            this.View.Window.Close();
+                            // Close the current window
+                        }
                     }
                 }
                 catch (Exception ex)

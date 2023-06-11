@@ -94,10 +94,10 @@ namespace CorsovaiBD
                         bool isAdmin = reader.GetBoolean("isAdmin");
                         var currentUser = new User(username, isAdmin);
                         ((AppDelegate)NSApplication.SharedApplication.Delegate).currentUser = currentUser;
-                        var viewController = this.Storyboard.InstantiateControllerWithIdentifier("MainController") as NSViewController;
-                        if (viewController != null)
+                        var mainController = this.Storyboard.InstantiateControllerWithIdentifier("MainController") as NSViewController;
+                        if (mainController != null)
                         {
-                            PresentViewControllerAsModalWindow(viewController);
+                            PresentViewControllerAsModalWindow(mainController);
                             this.View.Window.Close();
                             // Close the current window
                         }
